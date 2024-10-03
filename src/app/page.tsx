@@ -20,7 +20,7 @@ export default function Home() {
 
   return (
     <>
-      <div className="absolute top-5 right-5">
+      <div className="absolute z-50 top-5 right-5">
         <ModeToggle />
       </div>
 
@@ -86,15 +86,19 @@ function BouncyControls({ children }: { children: React.ReactNode }) {
 
   const { size, gl } = useThree();
 
-  useDrag(
-    ({ movement: [x, y], down }) => {
-      const newY = MathUtils.clamp(y / size.height, -1, 1) * Math.PI;
-      const newX = MathUtils.clamp(x / size.width, -1, 1) * Math.PI;
-      rotateX.set(down ? newY / 2 : 0);
-      rotateY.set(down ? newX * 1.25 : 0);
-    },
-    { target: gl.domElement }
-  );
+  const handleDrag = ({ movement: [x, y], down }: { movement: [number, number], down: boolean }) => {
+    const sensitivity = window.innerWidth <= 768 ? 2 : 1;
+
+    y = MathUtils.clamp(y / size.height, -1, 1) * Math.PI;
+    x = MathUtils.clamp(x / size.width, -1, 1) * Math.PI;
+    rotateX.set(down ? (y / 2) * sensitivity : 0);
+    rotateY.set(down ? (x * 1.25) * sensitivity : 0);
+  };
+
+  useDrag(handleDrag, {
+    target: gl.domElement,
+    pointer: { touch: true },
+  });
 
   return (
     <motion.group
@@ -105,6 +109,7 @@ function BouncyControls({ children }: { children: React.ReactNode }) {
     </motion.group>
   );
 }
+
 
 const springSettings = {
   damping: 20,
