@@ -15,7 +15,7 @@ export default function Home() {
 
   function Model({ url }: { url: string }) {
     const { scene } = useGLTF(url);
-    return <primitive object={scene} scale={.5} />;
+    return <primitive object={scene} scale={.4} />;
   }
 
   return (
@@ -26,14 +26,15 @@ export default function Home() {
 
       <section className="relative m-auto flex w-full max-w-[600px] flex-col gap-[20px] px-10 py-[50px] font-[family-name:var(--font-geist-sans)]">
         <div className="relative w-full h-[400px]">
-          <Canvas shadows camera={{ position: [-2, 2, 4], fov: 80 }}>
-            <ambientLight intensity={3.5} />
+          <Canvas shadows camera={{ position: [0, 1, 3], fov: 80 }}>
+            <ambientLight intensity={1.5} />
             <BouncyControls>
               <motion.group
                 ref={modelRef}
-                initial={{ scale: 2 }}
-                animate={{ scale: 3 }}
-                whileHover={{ scale: 3.5 }}
+                initial={{ scale: 1 }}
+                animate={{ scale: 2 }}
+                whileHover={{ scale: 3 }}
+                position={[0, .5, 0]}
                 transition={{
                   type: "spring",
                   stiffness: 300,
@@ -41,13 +42,13 @@ export default function Home() {
                   restDelta: 0.000001,
                 }}
               >
-                <Model url="/models/nasb2_mr_krabs.glb" />
+                <Model url="/models/helmi.glb" />
               </motion.group>
             </BouncyControls>
 
             <ContactShadows
               rotation-x={Math.PI / 2}
-              position={[0, -1, 0]}
+              position={[0, -2, 0]}
               opacity={1}
               width={1}
               height={1}
