@@ -27,7 +27,7 @@ export default function Home() {
       <section className="relative m-auto flex w-full max-w-[600px] flex-col gap-[20px] px-10 py-[50px] font-[family-name:var(--font-geist-sans)]">
         <div className="relative w-full h-[400px]">
           <Canvas shadows camera={{ position: [0, 1, 3], fov: 80 }}>
-            <ambientLight intensity={1.5} />
+            <ambientLight intensity={1.25} />
             <BouncyControls>
               <motion.group
                 ref={modelRef}
@@ -42,7 +42,7 @@ export default function Home() {
                   restDelta: 0.000001,
                 }}
               >
-                <Model url="/models/helmi.glb" />
+                <Model url="/models/helmi2.glb" />
               </motion.group>
             </BouncyControls>
 
