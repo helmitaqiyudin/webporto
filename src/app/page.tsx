@@ -9,6 +9,12 @@ import { useGLTF, ContactShadows } from "@react-three/drei";
 import { useMotionValue, useSpring } from "framer-motion";
 import { useDrag } from "@use-gesture/react";
 import { MathUtils } from "three";
+import { Separator } from "@/components/ui/separator"
+import { TextShimmer } from '@/components/core/text-shimmer';
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { FileDown } from "lucide-react";
+import { FiLinkedin, FiGithub, FiMail } from "react-icons/fi";
 
 export default function Home() {
   const modelRef = useRef(null);
@@ -20,61 +26,95 @@ export default function Home() {
 
   return (
     <>
-      <div className="absolute z-50 top-5 right-5">
+      <div className="absolute z-10 top-5 right-5">
         <ModeToggle />
       </div>
 
-      <section className="relative m-auto flex w-full max-w-[600px] flex-col gap-[20px] px-10 py-[50px] font-[family-name:var(--font-geist-sans)]">
-        <div className="relative w-full h-[400px]">
-          <Canvas shadows camera={{ position: [0, 1, 3], fov: 80 }}>
-            <ambientLight intensity={1.25} />
-            <BouncyControls>
-              <motion.group
-                ref={modelRef}
-                initial={{ scale: 1 }}
-                animate={{ scale: 2 }}
-                whileHover={{ scale: 3 }}
-                position={[0, .5, 0]}
-                transition={{
-                  type: "spring",
-                  stiffness: 300,
-                  damping: 10,
-                  restDelta: 0.000001,
-                }}
-              >
-                <Model url="/models/helmi2.glb" />
-              </motion.group>
-            </BouncyControls>
+      <div className="m-auto flex w-full max-w-[600px] flex-col gap-[20px] px-10 py-[50px] ">
+        <section className="flex flex-col gap-[10px]">
+          <div className="h-[400px]">
+            <Canvas shadows camera={{ position: [0, 1, 3], fov: 80 }}>
+              <ambientLight intensity={1.25} />
+              <BouncyControls>
+                <motion.group
+                  ref={modelRef}
+                  initial={{ scale: 1 }}
+                  animate={{ scale: 2 }}
+                  whileHover={{ scale: 3 }}
+                  position={[0, .5, 0]}
+                  transition={{
+                    type: "spring",
+                    stiffness: 300,
+                    damping: 10,
+                    restDelta: 0.000001,
+                  }}
+                >
+                  <Model url="/models/helmi2.glb" />
+                </motion.group>
+              </BouncyControls>
 
-            <ContactShadows
-              rotation-x={Math.PI / 2}
-              position={[0, -2, 0]}
-              opacity={1}
-              width={1}
-              height={1}
-              blur={3}
-              far={5}
+              <ContactShadows
+                rotation-x={Math.PI / 2}
+                position={[0, -1.5, 0]}
+                opacity={1}
+                width={1}
+                height={1}
+                blur={3}
+                far={5}
+              />
+            </Canvas>
+          </div>
+
+          <div className="flex flex-col">
+            <div className="flex justify-between">
+              <div>
+                <TextShimmer
+                  duration={3}
+                  className='font-[family-name:Satoshi-Bold]
+                text-xl [--base-color:theme(colors.black)] [--base-gradient-color:theme(colors.gray.300)] dark:[--base-color:theme(colors.white)] dark:[--base-gradient-color:theme(colors.gray.400)]'
+                >Helmi Taqiyudin</TextShimmer>
+                <CustomTextEffect
+                  text="Software Engineer"
+                  preset="blur"
+                  opacity={0.3}
+                  per={"char"} />
+              </div>
+              <div className="self-center flex">
+                <Link href="/resume.pdf" target="_blank">
+                  <Button variant="ghost">
+                    <span className="font-semibold">Resume</span>
+                    <FileDown className="ml-2 size-5" />
+                  </Button>
+                </Link>
+                <Link href="https://www.linkedin.com/in/helmitaqiyudin/" target="_blank">
+                  <Button variant="ghost">
+                    <FiLinkedin className="size-5" />
+                  </Button>
+                </Link>
+                <Link href="mailto:helmitaqiyudin@gmail.com" target="_blank">
+                  <Button variant="ghost">
+                    <FiMail className="size-5" />
+                  </Button>
+                </Link>
+                <Link href="https://github.com/helmitaqiyudin" target="_blank">
+                  <Button variant="ghost">
+                    <FiGithub className="size-5" />
+                  </Button>
+                </Link>
+              </div>
+            </div>
+            <br />
+            <CustomTextEffect
+              text={`I'm an Informatics Engineering graduate from Sepuluh Nopember Institute of Technology. Passionate in web and mobile app development, working with technologies like Next.js, TypeScript, and Flutter.`}
+              preset="slide"
+              opacity={0.5}
+              per="line"
+              delay={1.3}
             />
-          </Canvas>
-        </div>
-
-        <div className="flex flex-col">
-          <p>Helmi Taqiyudin</p>
-          <CustomTextEffect
-            text="Software Engineer"
-            preset="blur"
-            opacity={0.3}
-            per={"char"} />
-          <br />
-          <CustomTextEffect
-            text={`I'm an Informatics Engineering graduate from Sepuluh Nopember Institute of Technology. Passionate in web and mobile app development, working with technologies like Next.js, TypeScript, and Flutter.`}
-            preset="slide"
-            opacity={0.5}
-            per="word"
-            delay={1.3}
-          />
-        </div>
-      </section>
+          </div>
+        </section>
+        <Separator />
+      </div>
     </>
   );
 }
@@ -110,7 +150,6 @@ function BouncyControls({ children }: { children: React.ReactNode }) {
     </motion.group>
   );
 }
-
 
 const springSettings = {
   damping: 20,
