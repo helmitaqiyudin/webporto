@@ -66,7 +66,7 @@ export default function Home() {
           </div>
 
           <div className="flex flex-col">
-            <div className="flex justify-between">
+            <div className="flex md:justify-between flex-col md:flex-row gap-2">
               <div>
                 <TextShimmer
                   duration={3}
@@ -79,9 +79,9 @@ export default function Home() {
                   opacity={0.3}
                   per={"char"} />
               </div>
-              <div className="self-center flex">
+              <div className="md:self-center flex gap-1">
                 <Link href="/resume.pdf" target="_blank">
-                  <Button variant="ghost">
+                  <Button variant="outline">
                     <span className="font-semibold">Resume</span>
                     <FileDown className="ml-2 size-5" />
                   </Button>
@@ -105,7 +105,7 @@ export default function Home() {
             </div>
             <br />
             <p className="opacity-50">
-              I&apos;m an Informatics Engineering graduate from Surabaya, Indonesia. Specializing in web and mobile app development, working with technologies like Next.js, TypeScript, and Flutter.
+              I&apos;m an full-stack engineer from Surabaya, Indonesia. Specializing in web and mobile app development, working with technologies like Next.js, TypeScript, and Flutter.
             </p>
           </div>
         </section >
