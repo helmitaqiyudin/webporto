@@ -104,17 +104,13 @@ export default function Home() {
               </div>
             </div>
             <br />
-            <CustomTextEffect
-              text={`I'm an Informatics Engineering graduate from Sepuluh Nopember Institute of Technology. Passionate in web and mobile app development, working with technologies like Next.js, TypeScript, and Flutter.`}
-              preset="slide"
-              opacity={0.5}
-              per="line"
-              delay={1.3}
-            />
+            <p className="opacity-50">
+              I&apos;m an Informatics Engineering graduate from Surabaya, Indonesia. Specializing in web and mobile app development, working with technologies like Next.js, TypeScript, and Flutter.
+            </p>
           </div>
-        </section>
+        </section >
         <Separator />
-      </div>
+      </div >
     </>
   );
 }
