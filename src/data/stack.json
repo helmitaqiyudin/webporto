@@ -1,0 +1,50 @@
+[
+  {
+    "name": "Typescript",
+    "icon": "typescript",
+    "color": "#3178c6",
+    "desc": "JavaScript with superpowers"
+  },
+  {
+    "name": "React",
+    "icon": "react",
+    "color": "#61dafb",
+    "desc": "A JavaScript library"
+  },
+  {
+    "name": "NextJS",
+    "icon": "nextjs",
+    "color": "#000000",
+    "desc": "React Framework"
+  },
+  {
+    "name": "Tailwind",
+    "icon": "tailwindcss",
+    "color": "#38b2ac",
+    "desc": "CSS framework"
+  },
+  {
+    "name": "Git",
+    "icon": "git",
+    "color": "#f05032",
+    "desc": "Version control system"
+  },
+  {
+    "name": "Node",
+    "icon": "nodejs",
+    "color": "#339933",
+    "desc": "JavaScript runtime"
+  },
+  {
+    "name": "Express",
+    "icon": "express",
+    "color": "#000000",
+    "desc": "Node framework"
+  },
+  {
+    "name": "MongoDB",
+    "icon": "mongodb",
+    "color": "#47a248",
+    "desc": "NoSQL database"
+  }
+]

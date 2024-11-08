@@ -1,4 +1,4 @@
-import { TextEffect, PresetType, PerType } from '@/components/core/text-effect';
+import { TextEffect, PresetType, PerType } from '@/components/core/TextEffect';
 
 interface ProfileTextEffectProps {
     text: string;
