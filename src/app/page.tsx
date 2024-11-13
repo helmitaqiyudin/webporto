@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/Button";
 import { FileDown } from "lucide-react";
 import { FiLinkedin, FiGithub, FiMail } from "react-icons/fi";
 import HeadModel from "@/components/custom/Head3D";
+import TechStackDisplay from "@/components/custom/TechStack";
 
 export default function Home() {
 
@@ -19,7 +20,7 @@ export default function Home() {
         <ModeToggle />
       </div>
 
-      <div className="m-auto flex w-full max-w-[600px] flex-col gap-[20px] px-10 py-[50px] ">
+      <div className="flex w-full flex-col max-w-[650px] m-auto gap-[20px] py-[50px] ">
         <section className="flex flex-col gap-[10px]">
           <div className="h-[400px]">
             <HeadModel />
@@ -30,13 +31,12 @@ export default function Home() {
               <div>
                 <TextShimmer
                   duration={3}
-                  className='font-[family-name:Satoshi-Bold]
-                text-xl [--base-color:theme(colors.black)] [--base-gradient-color:theme(colors.gray.300)] dark:[--base-color:theme(colors.white)] dark:[--base-gradient-color:theme(colors.gray.400)]'
+                  className='font-[family-name:Satoshi-Bold] tracking-wider text-xl [--base-color:theme(colors.black)] [--base-gradient-color:theme(colors.gray.300)] dark:[--base-color:theme(colors.white)] dark:[--base-gradient-color:theme(colors.gray.400)]'
                 >Helmi Taqiyudin</TextShimmer>
                 <CustomTextEffect
+                  className="text-muted-foreground"
                   text="Software Engineer"
                   preset="blur"
-                  opacity={0.3}
                   per={"char"} />
               </div>
               <div className="md:self-center flex gap-1">
@@ -64,7 +64,7 @@ export default function Home() {
               </div>
             </div>
             <br />
-            <p className="opacity-50">
+            <p className="text-muted-foreground">
               I&apos;m an full-stack engineer from Surabaya, Indonesia. Specializing in web and mobile app development, working with technologies like Next.js, TypeScript, and Flutter.
             </p>
           </div>
@@ -73,7 +73,7 @@ export default function Home() {
         <Separator />
 
         <section>
-
+          <TechStackDisplay />
         </section>
       </div >
     </>
