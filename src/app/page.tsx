@@ -1,15 +1,15 @@
 "use client";
 
-import { CustomTextEffect } from "@/components/TextEffectWithDelay";
-import { ModeToggle } from "@/components/ThemeButton";
-import { Separator } from "@/components/ui/Separator"
-import { TextShimmer } from '@/components/core/TextShimmer';
+import { CustomTextEffect } from "@/components/textEffectWithDelay";
+import { ModeToggle } from "@/components/themeButton";
+import { Separator } from "@/components/ui/separator"
+import { TextShimmer } from '@/components/core/textShimmer';
 import Link from "next/link";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import { FileDown } from "lucide-react";
 import { FiLinkedin, FiGithub, FiMail } from "react-icons/fi";
-import HeadModel from "@/components/custom/Head3D";
-import TechStackDisplay from "@/components/custom/TechStack";
+import HeadModel from "@/components/custom/head3D";
+import TechStackDisplay from "@/components/custom/techStack";
 
 export default function Home() {
 

@@ -1,6 +1,6 @@
 import { Canvas } from "@react-three/fiber";
 import { motion } from "framer-motion-3d";
-import { BouncyControls } from "@/components/ModelControl";
+import { BouncyControls } from "@/components/modelControl";
 import { useRef } from "react";
 import { useGLTF, ContactShadows } from "@react-three/drei";
 

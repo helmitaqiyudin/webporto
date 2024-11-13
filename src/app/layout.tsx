@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { ThemeProvider } from "@/components/core/ThemeProvider"
+import { ThemeProvider } from "@/components/core/themeProvider"
 import "./globals.css";
 import "../fonts/css/satoshi.css";
 
