@@ -50,7 +50,7 @@ export default function TechStackDisplay() {
                             return (
                                 <Tooltip key={item.name}>
                                     <TooltipTrigger asChild>
-                                        <Card className="transition-all duration-300 hover:scale-105 hover:shadow-lg">
+                                        <Card className="transition-all duration-300 hover:scale-105 hover:shadow-lg bg-transparent dark:hover:bg-gray-800 hover:bg-gray-50">
                                             <CardContent className="p-4">
                                                 <div className="flex items-center gap-3">
                                                     <div

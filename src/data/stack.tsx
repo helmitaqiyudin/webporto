@@ -15,7 +15,7 @@ export const tech = [
     "name": "NextJS",
     "icon": "SiNextdotjs",
     "color": "#808080",
-    "desc": "React Framework"
+    "desc": "React framework"
   },
   {
     "name": "Tailwind",
