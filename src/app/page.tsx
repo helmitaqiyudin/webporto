@@ -20,7 +20,7 @@ export default function Home() {
         <ModeToggle />
       </div>
 
-      <div className="flex w-full flex-col max-w-[650px] m-auto gap-[20px] py-[50px] ">
+      <div className="flex w-full flex-col max-w-[650px] m-auto gap-[20px] py-[50px] px-10 md:px-0">
         <section className="flex flex-col gap-[10px]">
           <div className="h-[400px]">
             <HeadModel />

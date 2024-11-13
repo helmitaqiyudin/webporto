@@ -18,7 +18,7 @@ import {
     SiMongodb,
 } from "react-icons/si"
 
-import { tech } from "@/data/stack.json"
+import { tech } from "@/data/stack"
 
 const iconMap = {
     SiTypescript,
