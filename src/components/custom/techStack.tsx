@@ -64,7 +64,7 @@ export default function TechStackDisplay() {
                                                             style={{ color: item.color }}
                                                         />
                                                     </div>
-                                                    <h3 className="font-medium text-sm">{item.name}</h3>
+                                                    <h3 className="font-medium text-xs md:text-sm">{item.name}</h3>
                                                 </div>
                                             </CardContent>
                                         </Card>
