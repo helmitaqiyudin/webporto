@@ -12,7 +12,7 @@ import HeadModel from "@/components/custom/head3D";
 import TechStackDisplay from "@/components/custom/techStack";
 
 export default function Home() {
-
+  const year = new Date().getFullYear();
 
   return (
     <>
@@ -77,6 +77,14 @@ export default function Home() {
         <section>
           <TechStackDisplay />
         </section>
+
+
+
+
+        <Separator />
+        <div className="text-xs text-muted-foreground text-start">
+          <p>© {year} Helmi Taqiyudin</p>
+        </div>
       </div >
     </>
   );
