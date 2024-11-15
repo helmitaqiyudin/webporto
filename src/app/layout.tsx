@@ -4,6 +4,7 @@ import "./globals.css";
 import "../fonts/css/satoshi.css";
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import { Analytics } from "@vercel/analytics/react"
+import Providers from "./providers";
 
 export const metadata: Metadata = {
   title: "Helmi Taqiyudin",
@@ -24,7 +25,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <Providers>
+            {children}
+          </Providers>
         </ThemeProvider>
       </body>
     </html>
