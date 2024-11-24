@@ -1,84 +1,50 @@
 import { Card } from "@/components/ui/card";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hoverCard";
+import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
-import { DiscordData } from "@/types/discord_activity";
+import { DiscordData, Activity } from "@/types/discord_activity";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useState, useCallback } from "react";
 import { SiDiscord } from "react-icons/si";
+import { useInterval } from 'usehooks-ts';
+import { getStatusColor, getStatusText, getStatusType, calculateTimes } from "@/lib/utils";
 
-const useGetDiscordActivity = () => {
-    return useQuery<DiscordData>({
+const DISCORD_USER_ID = process.env.NEXT_PUBLIC_DISCORD_USER_ID;
+
+const fetchDiscordActivity = async (): Promise<DiscordData> => {
+    const res = await fetch(`https://api.lanyard.rest/v1/users/${DISCORD_USER_ID}`);
+    if (!res.ok) {
+        throw new Error('Failed to fetch Discord activity');
+    }
+    return res.json();
+};
+
+
+export default function DiscordActivity() {
+    const [elapsedTimes, setElapsedTimes] = useState<{ [key: string]: string }>({});
+    const [musicProgress, setMusicProgress] = useState<{ [key: string]: number }>({});
+
+    const { data, refetch } = useQuery<DiscordData>({
         queryKey: ['discord_activity'],
-        queryFn: async () => {
-            const res = await fetch(`https://api.lanyard.rest/v1/users/${process.env.NEXT_PUBLIC_DISCORD_USER_ID}`)
-            return res.json()
-        }
-    })
-}
+        queryFn: fetchDiscordActivity,
+        refetchInterval: 5000,
+    });
 
-export default function DiscrodActivity() {
-    const { data } = useGetDiscordActivity();
+    const updateTimes = useCallback(() => {
+        if (data?.data.activities) {
+            const now = Date.now();
+            const { elapsedTimes: newElapsedTimes, musicProgress: newMusicProgress } = calculateTimes(data.data.activities, now);
 
-    const [elapsedTime, setElapsedTime] = useState<string | null>(null)
+            setElapsedTimes(newElapsedTimes);
+            setMusicProgress(newMusicProgress);
 
-    useEffect(() => {
-        const interval = setInterval(() => {
-            if (data?.data.activities[0]?.timestamps?.start) {
-                const start = data.data.activities[0].timestamps.start
-                const now = Date.now()
-                const elapsed = Math.floor((now - start) / 1000)
-                const hours = Math.floor(elapsed / 3600)
-                const minutes = Math.floor((elapsed % 3600) / 60)
-                setElapsedTime(
-                    hours > 0 ? `${hours}h ${minutes}m elapsed` : `${minutes}m elapsed`
-                )
+            if (Object.values(newElapsedTimes).some(time => time === "Finished")) {
+                refetch();
             }
-        }, 1000)
-
-        return () => clearInterval(interval)
-    }, [data])
-
-
-    const getStatusColor = (status: string | undefined) => {
-        switch (status) {
-            case 'online':
-                return 'bg-green-500'
-            case 'idle':
-                return 'bg-yellow-500'
-            case 'dnd':
-                return 'bg-red-500'
-            default:
-                return 'bg-gray-500'
         }
-    }
+    }, [data, refetch]);
 
-    const getStatusText = (status: string | undefined) => {
-        switch (status) {
-            case 'online':
-                return 'Online'
-            case 'idle':
-                return 'Idle'
-            case 'dnd':
-                return 'Do Not Disturb'
-            default:
-                return 'Offline'
-        }
-    }
-
-    const getStatusType = (type: number | undefined) => {
-        switch (type) {
-            case 0:
-                return 'Playing'
-            case 2:
-                return 'Listening'
-            case 3:
-                return 'Watching'
-            case 5:
-                return 'Competing'
-            default:
-                return null
-        }
-    }
+    useInterval(updateTimes, 1000);
 
     return (
         <HoverCard openDelay={200}>
@@ -99,35 +65,46 @@ export default function DiscrodActivity() {
             </HoverCardTrigger>
             <HoverCardContent className="w-80 ml-3">
                 <Card className="p-3">
-                    {data?.data.activities[0] ? (
-                        <>
-                            <div className="flex items-center">
-                                <span className="text-sm font-medium">{getStatusType(data?.data.activities[0]?.type)}</span>
-                            </div>
-                            <Separator className="my-2" />
-                            <div className="flex items-start gap-3">
-                                <div className="flex-1 min-w-0">
-                                    <p className="text-sm font-medium truncate">
-                                        {data.data.activities[0].name}
-                                    </p>
-                                    {data.data.activities[0].details && (
-                                        <p className="text-xs text-muted-foreground truncate">
-                                            {data.data.activities[0].details}
+                    {data?.data.activities && data.data.activities.length > 0 ? (
+                        data.data.activities.map((activity: Activity) => (
+                            <div key={activity.id} className="mb-3 last:mb-0">
+                                <div className="flex items-center">
+                                    <span className="text-sm font-medium">{getStatusType(activity.type)}</span>
+                                </div>
+                                <Separator className="my-2" />
+                                <div className="flex items-start gap-3">
+                                    <div className="flex-1 min-w-0">
+                                        <p className="text-sm font-medium truncate">
+                                            {activity.name}
                                         </p>
-                                    )}
-                                    {data.data.activities[0].state && (
-                                        <p className="text-xs text-muted-foreground truncate">
-                                            {data.data.activities[0].state}
-                                        </p>
-                                    )}
-                                    {elapsedTime && (
-                                        <p className="text-xs text-muted-foreground mt-1">
-                                            {elapsedTime}
-                                        </p>
-                                    )}
+                                        {activity.details && (
+                                            <p className="text-xs text-muted-foreground truncate">
+                                                {activity.details}
+                                            </p>
+                                        )}
+                                        {activity.state && (
+                                            <p className="text-xs text-muted-foreground truncate">
+                                                {activity.state}
+                                            </p>
+                                        )}
+                                        {activity.type === 2 && activity.timestamps?.end ? (
+                                            <div className="mt-2 space-y-1">
+                                                <Progress value={musicProgress[activity.id]} className="h-1" />
+                                                <p className="text-xs text-muted-foreground text-right">
+                                                    {elapsedTimes[activity.id]}
+                                                </p>
+                                            </div>
+                                        ) : (
+                                            elapsedTimes[activity.id] && (
+                                                <p className="text-xs text-muted-foreground mt-1">
+                                                    {elapsedTimes[activity.id]}
+                                                </p>
+                                            )
+                                        )}
+                                    </div>
                                 </div>
                             </div>
-                        </>
+                        ))
                     ) : (
                         <p className="text-sm text-muted-foreground">
                             Not doing anything right now 😅

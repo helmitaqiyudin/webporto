@@ -47,4 +47,5 @@ export interface Assets {
 
 export interface Timestamps {
   start: number;
+  end: number;
 }
