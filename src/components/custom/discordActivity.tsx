@@ -7,7 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useState, useCallback } from "react";
 import { SiDiscord } from "react-icons/si";
 import { useInterval } from 'usehooks-ts';
-import { getStatusColor, getStatusText, getStatusType, calculateTimes } from "@/lib/utils";
+import { getStatusText, getStatusType, calculateTimes } from "@/lib/utils";
 
 const DISCORD_USER_ID = process.env.NEXT_PUBLIC_DISCORD_USER_ID;
 
@@ -53,9 +53,7 @@ export default function DiscordActivity() {
                     <div className="relative">
                         <SiDiscord className="w-5 h-5 text-[#5865F2]" />
                         <div
-                            className={`absolute bottom-0 right-0 w-2.5 h-2.5 ${getStatusColor(
-                                data?.data.discord_status
-                            )} rounded-full border-2 border-background`}
+                            className={`absolute bottom-0 right-0 w-2.5 h-2.5 ${data?.data.discord_status === "online" ? "bg-green-500" : data?.data.discord_status === "idle" ? "bg-yellow-500" : data?.data.discord_status === "dnd" ? "bg-red-500" : "bg-gray-500"} rounded-full border-2 border-background`}
                         />
                     </div>
                     <span className="text-sm font-medium">
