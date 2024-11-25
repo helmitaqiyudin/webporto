@@ -23,7 +23,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           attribute="class"
           defaultTheme="system"
           enableSystem
-          disableTransitionOnChange
         >
           <Providers>
             {children}

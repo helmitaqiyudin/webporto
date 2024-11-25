@@ -55,6 +55,9 @@ export default function DiscordActivity() {
                         <div
                             className={`absolute bottom-0 right-0 w-2.5 h-2.5 ${data?.data.discord_status === "online" ? "bg-green-500" : data?.data.discord_status === "idle" ? "bg-yellow-500" : data?.data.discord_status === "dnd" ? "bg-red-500" : "bg-gray-500"} rounded-full border-2 border-background`}
                         />
+                        <div
+                            className={`absolute bottom-0 right-0 w-2.5 h-2.5 ${data?.data.discord_status === "online" ? "bg-green-500 animate-ping" : data?.data.discord_status === "idle" ? "bg-yellow-500" : data?.data.discord_status === "dnd" ? "bg-red-500" : "bg-gray-500"} rounded-full border-2 border-background`}
+                        />
                     </div>
                     <span className="text-sm font-medium">
                         {getStatusText(data?.data.discord_status)}
