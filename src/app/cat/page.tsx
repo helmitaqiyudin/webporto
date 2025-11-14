@@ -129,7 +129,7 @@ function Cat({ mouseScreenPos }: { mouseScreenPos: { x: number; y: number } }) {
         <>
             <SpriteAnimator
                 ref={idleRef}
-                textureImageURL="./models/idle.png"
+                textureImageURL="/models/idle.png"
                 startFrame={0}
                 position={[0, 0, PLANE_Z]}
                 autoPlay
@@ -141,7 +141,7 @@ function Cat({ mouseScreenPos }: { mouseScreenPos: { x: number; y: number } }) {
             />
             <SpriteAnimator
                 ref={runRef}
-                textureImageURL="./models/run.png"
+                textureImageURL="/models/run.png"
                 startFrame={0}
                 position={[0, 0, PLANE_Z]}
                 autoPlay
@@ -154,7 +154,7 @@ function Cat({ mouseScreenPos }: { mouseScreenPos: { x: number; y: number } }) {
             />
             <SpriteAnimator
                 ref={sleepRef}
-                textureImageURL="./models/sleep.png"
+                textureImageURL="/models/sleep.png"
                 startFrame={0}
                 position={[0, 0, PLANE_Z]}
                 autoPlay={isSleeping && !isWakingUp}
@@ -166,7 +166,7 @@ function Cat({ mouseScreenPos }: { mouseScreenPos: { x: number; y: number } }) {
             />
             <SpriteAnimator
                 ref={wakeRef}
-                textureImageURL="./models/sleep.png"
+                textureImageURL="/models/sleep.png"
                 startFrame={4}
                 position={[0, 0, PLANE_Z]}
                 autoPlay={isWakingUp}
