@@ -195,6 +195,7 @@ interface InteractiveCatProps {
 
 export default function InteractiveCat({ className = "" }: InteractiveCatProps) {
     const [mouseScreenPos, setMouseScreenPos] = useState({ x: 0, y: 0 });
+    const [isMounted, setIsMounted] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
 
     const updateMousePos = (clientX: number, clientY: number) => {
@@ -207,6 +208,12 @@ export default function InteractiveCat({ className = "" }: InteractiveCatProps) 
     };
 
     useEffect(() => {
+        setIsMounted(true);
+    }, []);
+
+    useEffect(() => {
+        if (!isMounted || typeof window === 'undefined') return;
+
         // Initialize mouse position to center of viewport
         const updateInitialPos = () => {
             setMouseScreenPos({
@@ -235,10 +242,12 @@ export default function InteractiveCat({ className = "" }: InteractiveCatProps) 
             window.removeEventListener('mousemove', handleMouseMove);
             window.removeEventListener('touchmove', handleTouchMove);
         };
-    }, []);
+    }, [isMounted]);
 
     // Update container height when document height changes
     useEffect(() => {
+        if (!isMounted || typeof document === 'undefined') return;
+
         const updateHeight = () => {
             if (containerRef.current) {
                 const docHeight = Math.max(
@@ -262,7 +271,11 @@ export default function InteractiveCat({ className = "" }: InteractiveCatProps) 
             window.removeEventListener('resize', updateHeight);
             observer.disconnect();
         };
-    }, []);
+    }, [isMounted]);
+
+    if (!isMounted) {
+        return null;
+    }
 
     return (
         <div

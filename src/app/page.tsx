@@ -10,7 +10,11 @@ import HeadModel from "@/components/custom/head3D";
 import TechStackDisplay from "@/components/custom/techStack";
 import TimelineContainer from "@/components/custom/timelineContainer";
 import DiscrodActivity from "@/components/custom/discordActivity";
-import InteractiveCat from "@/components/custom/interactiveCat";
+import dynamic from "next/dynamic";
+
+const InteractiveCat = dynamic(() => import("@/components/custom/interactiveCat"), {
+  ssr: false,
+});
 
 export default function Home() {
   const year = new Date().getFullYear();
