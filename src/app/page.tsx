@@ -10,6 +10,7 @@ import HeadModel from "@/components/custom/head3D";
 import TechStackDisplay from "@/components/custom/techStack";
 import TimelineContainer from "@/components/custom/timelineContainer";
 import DiscrodActivity from "@/components/custom/discordActivity";
+import InteractiveCat from "@/components/custom/interactiveCat";
 
 export default function Home() {
   const year = new Date().getFullYear();
@@ -25,6 +26,8 @@ export default function Home() {
       <div className="absolute top-4 left-4 z-50">
         <DiscrodActivity />
       </div>
+
+      <InteractiveCat className="z-10" />
 
       <div className="flex w-full flex-col max-w-[650px] m-auto gap-[20px] py-[50px] px-10 md:px-0">
         <section className="flex flex-col gap-[10px]">

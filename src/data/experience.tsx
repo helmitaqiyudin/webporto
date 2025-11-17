@@ -1,6 +1,14 @@
 export const experience = [
     {
         logo: "/images/dptsi.png",
+        title: "Web Developer",
+        company: "Direktorat Pengembangan Teknologi dan Sistem Informasi (DPTSI) ITS",
+        location: "Surabaya, Indonesia",
+        date: "Jul 2025 - Present",
+        description: "Currently working as a web developer focusing on building and maintaining internal ITS systems, primarily using Next.js for developing efficient and scalable web applications."
+    },
+    {
+        logo: "/images/dptsi.png",
         title: "Front-End Developer",
         company: "Direktorat Pengembangan Teknologi dan Sistem Informasi (DPTSI) ITS",
         location: "Surabaya, Indonesia",

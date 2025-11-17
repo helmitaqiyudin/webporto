@@ -144,7 +144,7 @@ function Cat({ mouseScreenPos }: { mouseScreenPos: { x: number; y: number } }) {
                 loop
                 fps={8}
                 numberOfFrames={6}
-                scale={1}
+                scale={.7}
                 flipX={!flipX}
             />
             <SpriteAnimator
@@ -156,7 +156,7 @@ function Cat({ mouseScreenPos }: { mouseScreenPos: { x: number; y: number } }) {
                 loop
                 fps={24}
                 numberOfFrames={12}
-                scale={1}
+                scale={.7}
                 visible={false}
                 flipX={flipX}
             />
@@ -168,7 +168,7 @@ function Cat({ mouseScreenPos }: { mouseScreenPos: { x: number; y: number } }) {
                 autoPlay={isSleeping && !isWakingUp}
                 fps={8}
                 numberOfFrames={5}
-                scale={1}
+                scale={.7}
                 visible={false}
                 flipX={flipX}
             />
@@ -181,7 +181,7 @@ function Cat({ mouseScreenPos }: { mouseScreenPos: { x: number; y: number } }) {
                 playBackwards={true}
                 fps={8}
                 numberOfFrames={5}
-                scale={1}
+                scale={.7}
                 visible={false}
                 flipX={flipX}
             />
@@ -189,7 +189,11 @@ function Cat({ mouseScreenPos }: { mouseScreenPos: { x: number; y: number } }) {
     );
 }
 
-function CatFollower() {
+interface InteractiveCatProps {
+    className?: string;
+}
+
+export default function InteractiveCat({ className = "" }: InteractiveCatProps) {
     const [mouseScreenPos, setMouseScreenPos] = useState({ x: 0, y: 0 });
     const containerRef = useRef<HTMLDivElement>(null);
 
@@ -202,40 +206,74 @@ function CatFollower() {
         });
     };
 
-    const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-        updateMousePos(e.clientX, e.clientY);
-    };
-
-    const handleTouch = (e: React.TouchEvent) => {
-        e.preventDefault();
-        const touch = e.touches[0];
-        if (touch) {
-            updateMousePos(touch.clientX, touch.clientY);
-        }
-    };
-
     useEffect(() => {
-        setMouseScreenPos({
-            x: window.innerWidth / 2,
-            y: window.innerHeight / 2,
-        });
+        // Initialize mouse position to center of viewport
+        const updateInitialPos = () => {
+            setMouseScreenPos({
+                x: window.innerWidth / 2,
+                y: window.innerHeight / 2 + window.scrollY,
+            });
+        };
+        updateInitialPos();
+
+        // Use global mouse move listener so we don't interfere with text selection
+        const handleMouseMove = (e: MouseEvent) => {
+            updateMousePos(e.clientX, e.clientY);
+        };
+
+        const handleTouchMove = (e: TouchEvent) => {
+            const touch = e.touches[0];
+            if (touch) {
+                updateMousePos(touch.clientX, touch.clientY);
+            }
+        };
+
+        window.addEventListener('mousemove', handleMouseMove);
+        window.addEventListener('touchmove', handleTouchMove, { passive: true });
+
+        return () => {
+            window.removeEventListener('mousemove', handleMouseMove);
+            window.removeEventListener('touchmove', handleTouchMove);
+        };
+    }, []);
+
+    // Update container height when document height changes
+    useEffect(() => {
+        const updateHeight = () => {
+            if (containerRef.current) {
+                const docHeight = Math.max(
+                    document.body.scrollHeight,
+                    document.body.offsetHeight,
+                    document.documentElement.clientHeight,
+                    document.documentElement.scrollHeight,
+                    document.documentElement.offsetHeight
+                );
+                containerRef.current.style.height = `${docHeight}px`;
+            }
+        };
+
+        updateHeight();
+        window.addEventListener('resize', updateHeight);
+        // Use MutationObserver to detect content changes
+        const observer = new MutationObserver(updateHeight);
+        observer.observe(document.body, { childList: true, subtree: true });
+
+        return () => {
+            window.removeEventListener('resize', updateHeight);
+            observer.disconnect();
+        };
     }, []);
 
     return (
         <div
             ref={containerRef}
-            className="bg-cyan-300 h-[100dvh] w-[100dvw] relative touch-none"
-            onMouseMove={handleMouseMove}
-            onTouchStart={handleTouch}
-            onTouchMove={handleTouch}
+            className={`absolute top-0 left-0 w-full pointer-events-none ${className}`}
+            style={{ userSelect: 'none', minHeight: '100vh' }}
         >
-            <Canvas camera={{ position: [0, 0, 5] }}>
+            <Canvas camera={{ position: [0, 0, 5] }} style={{ pointerEvents: 'none' }}>
                 <Cat mouseScreenPos={mouseScreenPos} />
             </Canvas>
         </div>
     );
 }
 
-export default function CatPage() {
-    return <CatFollower />;
-}
