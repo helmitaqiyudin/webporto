@@ -1,7 +1,7 @@
 'use client';
 import { SpriteAnimator } from "@react-three/drei";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { useRef, useState, useEffect, useMemo } from "react";
+import { useRef, useState, useEffect } from "react";
 import * as THREE from "three";
 
 const PLANE_Z = -2;
@@ -44,13 +44,6 @@ function Cat({ mouseScreenPos }: { mouseScreenPos: { x: number; y: number } }) {
     const wakeStartTimeRef = useRef(0);
     const WAKE_ANIMATION_DURATION = 5 / 8;
 
-    const textureUrls = useMemo(() => {
-        return {
-            idle: `/models/idle.png`,
-            run: `/models/run.png`,
-            sleep: `/models/sleep.png`,
-        };
-    }, []);
 
     useFrame((state, delta) => {
         const targetPos = screenToWorldPos(mouseScreenPos, camera, size, PLANE_Z);
@@ -137,7 +130,7 @@ function Cat({ mouseScreenPos }: { mouseScreenPos: { x: number; y: number } }) {
         <>
             <SpriteAnimator
                 ref={idleRef}
-                textureImageURL={textureUrls.idle}
+                textureImageURL={"/models/idle.png"}
                 startFrame={0}
                 position={[0, 0, PLANE_Z]}
                 autoPlay
@@ -149,7 +142,7 @@ function Cat({ mouseScreenPos }: { mouseScreenPos: { x: number; y: number } }) {
             />
             <SpriteAnimator
                 ref={runRef}
-                textureImageURL={textureUrls.run}
+                textureImageURL={"/models/run.png"}
                 startFrame={0}
                 position={[0, 0, PLANE_Z]}
                 autoPlay
@@ -162,7 +155,7 @@ function Cat({ mouseScreenPos }: { mouseScreenPos: { x: number; y: number } }) {
             />
             <SpriteAnimator
                 ref={sleepRef}
-                textureImageURL={textureUrls.sleep}
+                textureImageURL={"/models/sleep.png"}
                 startFrame={0}
                 position={[0, 0, PLANE_Z]}
                 autoPlay={isSleeping && !isWakingUp}
@@ -174,7 +167,7 @@ function Cat({ mouseScreenPos }: { mouseScreenPos: { x: number; y: number } }) {
             />
             <SpriteAnimator
                 ref={wakeRef}
-                textureImageURL={textureUrls.sleep}
+                textureImageURL={"/models/sleep.png"}
                 startFrame={4}
                 position={[0, 0, PLANE_Z]}
                 autoPlay={isWakingUp}
