@@ -6,6 +6,7 @@ import Hero from "@/components/custom/hero";
 import SiteFooter from "@/components/custom/siteFooter";
 import { InteractiveCatLazy } from "@/components/custom/lazy3d";
 import WidgetGrid from "@/components/widgets/widgetGrid";
+import ProjectsSection from "@/components/custom/projectsSection";
 
 export default function Home() {
   return (
@@ -25,6 +26,8 @@ export default function Home() {
           <h2 className="text-base sm:text-lg md:text-xl">Live</h2>
           <WidgetGrid />
         </section>
+
+        <ProjectsSection />
 
         <Separator />
 

@@ -5,7 +5,11 @@ export const experience = [
         company: "Direktorat Pengembangan Teknologi dan Sistem Informasi (DPTSI) ITS",
         location: "Surabaya, Indonesia",
         date: "Jul 2025 - Present",
-        description: "Currently working as a web developer focusing on building and maintaining internal ITS systems, primarily using Next.js for developing efficient and scalable web applications."
+        description: "Building and maintaining internal systems for ITS.",
+        highlights: [
+            "Develop web applications primarily with Next.js",
+            "Focus on efficient, scalable apps for campus users",
+        ],
     },
     {
         logo: "/images/dptsi.png",
@@ -13,7 +17,11 @@ export const experience = [
         company: "Direktorat Pengembangan Teknologi dan Sistem Informasi (DPTSI) ITS",
         location: "Surabaya, Indonesia",
         date: "Jan 2024 - Jun 2024",
-        description: "Developed a web app for campus housing management called myITS Housing using Next.js while also adding AR features to simplify property searches for the housing team."
+        description: "Built myITS Housing, a web app for campus housing management.",
+        highlights: [
+            "Developed the app with Next.js",
+            "Added AR features that simplify property searches for the housing team",
+        ],
     },
     {
         logo: "/images/skk-migas.png",
@@ -21,6 +29,10 @@ export const experience = [
         company: "SKK Migas",
         location: "Surabaya, Indonesia",
         date: "Jun 2023 - Oct 2023",
-        description: "Built IOG E-commerce for SKK Migas, a B2B/B2C platform streamlining compliant procurement in the oil and gas sector. Enhanced front-end and resolved component issues collaboratively."
+        description: "Built IOG E-commerce, a B2B/B2C platform for the oil and gas sector.",
+        highlights: [
+            "Streamlined compliant procurement for SKK Migas",
+            "Enhanced the front end and resolved component issues with the team",
+        ],
     },
 ]

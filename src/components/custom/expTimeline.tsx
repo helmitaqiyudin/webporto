@@ -27,6 +27,11 @@ export default function ExperienceTimeline() {
                         <p className="text-sm text-muted-foreground">
                             {item.description}
                         </p>
+                        <ul className="list-disc space-y-1 pl-4 text-sm text-muted-foreground">
+                            {item.highlights.map((highlight) => (
+                                <li key={highlight}>{highlight}</li>
+                            ))}
+                        </ul>
                     </div>
                 </div>
             ))}
