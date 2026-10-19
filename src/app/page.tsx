@@ -4,7 +4,7 @@ import TechStackDisplay from "@/components/custom/techStack";
 import TimelineContainer from "@/components/custom/timelineContainer";
 import Hero from "@/components/custom/hero";
 import SiteFooter from "@/components/custom/siteFooter";
-import { InteractiveCatLazy } from "@/components/custom/lazy3d";
+import InteractiveCat from "@/components/custom/interactiveCat";
 import WidgetGrid from "@/components/widgets/widgetGrid";
 import ProjectsSection from "@/components/custom/projectsSection";
 import ErrorBoundary from "@/components/core/errorBoundary";
@@ -19,7 +19,7 @@ export default function Home() {
       </div>
 
       <ErrorBoundary fallback={null}>
-        <InteractiveCatLazy className="z-10" />
+        <InteractiveCat />
       </ErrorBoundary>
 
       <main className="mx-auto flex w-full max-w-[680px] flex-col gap-8 px-4 py-12 sm:px-6">
