@@ -1,7 +1,7 @@
 'use client';
-import { SpriteAnimator } from "@react-three/drei";
+import { SpriteAnimator, useSpriteLoader } from "@react-three/drei";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState } from "react";
 import * as THREE from "three";
 
 const PLANE_Z = -2;
@@ -43,6 +43,10 @@ function Cat({ mouseScreenPos }: { mouseScreenPos: { x: number; y: number } }) {
     const prevMousePosRef = useRef({ x: 0, y: 0 });
     const wakeStartTimeRef = useRef(0);
     const WAKE_ANIMATION_DURATION = 5 / 8;
+    // drei 10 only loads a sprite sheet through useSpriteLoader (or a JSON atlas).
+    const idleSheet = useSpriteLoader("/models/idle.png", null, null, 6).spriteObj;
+    const runSheet = useSpriteLoader("/models/run.png", null, null, 12).spriteObj;
+    const sleepSheet = useSpriteLoader("/models/sleep.png", null, null, 5).spriteObj;
 
 
     useFrame((state, delta) => {
@@ -109,7 +113,7 @@ function Cat({ mouseScreenPos }: { mouseScreenPos: { x: number; y: number } }) {
             }
         }
 
-        const updateSprite = (ref: React.RefObject<THREE.Group>) => {
+        const updateSprite = (ref: React.RefObject<THREE.Group | null>) => {
             if (ref.current) {
                 ref.current.position.set(catPos.current.x, catPos.current.y, PLANE_Z);
             }
@@ -130,7 +134,7 @@ function Cat({ mouseScreenPos }: { mouseScreenPos: { x: number; y: number } }) {
         <>
             <SpriteAnimator
                 ref={idleRef}
-                textureImageURL={"/models/idle.png"}
+                spriteDataset={idleSheet}
                 startFrame={0}
                 position={[0, 0, PLANE_Z]}
                 autoPlay
@@ -142,7 +146,7 @@ function Cat({ mouseScreenPos }: { mouseScreenPos: { x: number; y: number } }) {
             />
             <SpriteAnimator
                 ref={runRef}
-                textureImageURL={"/models/run.png"}
+                spriteDataset={runSheet}
                 startFrame={0}
                 position={[0, 0, PLANE_Z]}
                 autoPlay
@@ -155,7 +159,7 @@ function Cat({ mouseScreenPos }: { mouseScreenPos: { x: number; y: number } }) {
             />
             <SpriteAnimator
                 ref={sleepRef}
-                textureImageURL={"/models/sleep.png"}
+                spriteDataset={sleepSheet}
                 startFrame={0}
                 position={[0, 0, PLANE_Z]}
                 autoPlay={isSleeping && !isWakingUp}
@@ -167,7 +171,7 @@ function Cat({ mouseScreenPos }: { mouseScreenPos: { x: number; y: number } }) {
             />
             <SpriteAnimator
                 ref={wakeRef}
-                textureImageURL={"/models/sleep.png"}
+                spriteDataset={sleepSheet}
                 startFrame={4}
                 position={[0, 0, PLANE_Z]}
                 autoPlay={isWakingUp}
@@ -183,7 +187,9 @@ function Cat({ mouseScreenPos }: { mouseScreenPos: { x: number; y: number } }) {
 }
 
 function CatFollower() {
-    const [mouseScreenPos, setMouseScreenPos] = useState({ x: 0, y: 0 });
+    const [mouseScreenPos, setMouseScreenPos] = useState(() =>
+        typeof window === "undefined" ? { x: 0, y: 0 } : { x: window.innerWidth / 2, y: window.innerHeight / 2 }
+    );
     const containerRef = useRef<HTMLDivElement>(null);
 
     const updateMousePos = (clientX: number, clientY: number) => {
@@ -207,12 +213,6 @@ function CatFollower() {
         }
     };
 
-    useEffect(() => {
-        setMouseScreenPos({
-            x: window.innerWidth / 2,
-            y: window.innerHeight / 2,
-        });
-    }, []);
 
     return (
         <div

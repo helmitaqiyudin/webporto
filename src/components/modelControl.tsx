@@ -1,14 +1,16 @@
-import { useMotionValue, useSpring } from "framer-motion";
+import { useRef } from "react";
 import { useDrag } from "@use-gesture/react";
-import { MathUtils } from "three";
-import { useThree } from "@react-three/fiber";
-import { motion } from "framer-motion-3d";
+import { MathUtils, type Group } from "three";
+import { useFrame, useThree } from "@react-three/fiber";
+import { stepSpring, type SpringConfig } from "@/lib/spring";
+
+const springSettings: SpringConfig = { stiffness: 1000, damping: 20 };
 
 function BouncyControls({ children }: { children: React.ReactNode }) {
-    const rotateX = useMotionValue(0);
-    const rotateY = useMotionValue(0);
-    const springX = useSpring(rotateX, springSettings);
-    const springY = useSpring(rotateY, springSettings);
+    const groupRef = useRef<Group>(null);
+    const target = useRef({ x: 0, y: 0 });
+    const springX = useRef({ value: 0, velocity: 0 });
+    const springY = useRef({ value: 0, velocity: 0 });
 
     const { size, gl } = useThree();
 
@@ -17,8 +19,8 @@ function BouncyControls({ children }: { children: React.ReactNode }) {
 
         y = MathUtils.clamp(y / size.height, -1, 1) * Math.PI;
         x = MathUtils.clamp(x / size.width, -1, 1) * Math.PI;
-        rotateX.set(down ? (y / 2) * sensitivity : 0);
-        rotateY.set(down ? (x * 1.25) * sensitivity : 0);
+        target.current.x = down ? (y / 2) * sensitivity : 0;
+        target.current.y = down ? (x * 1.25) * sensitivity : 0;
     };
 
     useDrag(handleDrag, {
@@ -26,20 +28,16 @@ function BouncyControls({ children }: { children: React.ReactNode }) {
         pointer: { touch: true },
     });
 
-    return (
-        <motion.group
-            rotation-x={springX}
-            rotation-y={springY}
-        >
-            {children}
-        </motion.group>
-    );
-}
+    useFrame((_, delta) => {
+        springX.current = stepSpring(springX.current, target.current.x, springSettings, delta);
+        springY.current = stepSpring(springY.current, target.current.y, springSettings, delta);
+        if (groupRef.current) {
+            groupRef.current.rotation.x = springX.current.value;
+            groupRef.current.rotation.y = springY.current.value;
+        }
+    });
 
-const springSettings = {
-    damping: 20,
-    stiffness: 1000,
-    restDelta: 0.000001,
-};
+    return <group ref={groupRef}>{children}</group>;
+}
 
 export { BouncyControls };

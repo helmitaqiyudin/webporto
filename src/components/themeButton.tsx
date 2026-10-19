@@ -7,10 +7,11 @@ import { useTheme } from "next-themes"
 import { Button } from "@/components/ui/button"
 
 export function ModeToggle() {
-    const { theme, setTheme } = useTheme()
+    const { resolvedTheme, setTheme } = useTheme()
 
+    // resolvedTheme, not theme: with the "system" default, theme is "system" and the first click did nothing.
     const toggleTheme = () => {
-        setTheme(theme === "dark" ? "light" : "dark")
+        setTheme(resolvedTheme === "dark" ? "light" : "dark")
     }
 
     return (
