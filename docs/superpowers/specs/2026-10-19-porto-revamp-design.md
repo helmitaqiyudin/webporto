@@ -162,7 +162,7 @@ helmi-api/
 ### 5.1 Upgrade
 
 - Next 16 + React 19.2, `@react-three/fiber` v9, `@react-three/drei` v10, `framer-motion` v12. Versi persisnya diambil dari npm waktu implementasi.
-- `framer-motion-3d` dihapus. Efek pegas di `head3D.tsx` dan `modelControl.tsx` ditulis ulang pakai `useFrame` + `THREE.MathUtils.damp`.
+- `framer-motion-3d` dihapus. Efek pegas di `head3D.tsx` dan `modelControl.tsx` ditulis ulang pakai `useFrame` + integrator pegas kecil (`stepSpring`). `THREE.MathUtils.damp` ga bisa overshoot, jadi efek mantulnya bakal hilang.
 - `@mantine/*` dihapus karena ga dipakai.
 - `next lint` udah dihapus di Next 16, jadi script lint diganti `eslint .` dengan flat config.
 - `page.tsx` jadi server component. Komponen yang butuh state/efek (widget, 3D, kucing, text effect) jadi client island.
@@ -191,14 +191,14 @@ Semua widget ada di `src/components/widgets/`. Masing-masing pakai React Query, 
 - **`DiscordCard`:** data dari Lanyard, interval 5 detik (sama kayak sekarang). Nampilin avatar, titik status, aktivitas pertama, dan timer. Kalau aktivitasnya lebih dari satu, sisanya muncul di hover card. `calculateTimes` dan helper lain di `lib/utils.ts` dipakai ulang.
 - **`SpotifyCard`:**
   - `now-playing` di-refresh tiap 10 detik, dan progress-nya diinterpolasi di client tiap 1 detik.
-  - Kalau `isPlaying === false`, kartu nampilin `/spotify/recent` dengan label "Terakhir didengerin".
+  - Kalau `isPlaying === false`, kartu nampilin `/spotify/recent` dengan label "Last played". Semua teks UI pakai bahasa Inggris, sama kayak situs yang sekarang.
   - Tombol **Suggest a song** ngebuka dialog. Ada input pencarian (debounce 300 ms, minimal 2 karakter) dan daftar maksimal 5 hasil. Pengunjung pilih lagu, POST ke `/spotify/queue`, terus muncul pesan sesuai hasilnya:
 
     | Hasil | Pesan |
     |---|---|
-    | `ok` | "Masuk ke queue Helmi" |
-    | `not_listening` | "Helmi lagi ga dengerin musik" |
-    | lainnya | "Gagal, coba lagi" |
+    | `ok` | "Added to Helmi's queue" |
+    | `not_listening` | "Helmi isn't listening right now" |
+    | lainnya | "Couldn't add that song. Try again." |
 
   - Dialog-nya pakai `@radix-ui/react-dialog` (dependency baru, gaya shadcn sama kayak komponen `ui/` yang ada).
 - **`StravaCard`:**
@@ -217,7 +217,7 @@ Semua widget ada di `src/components/widgets/`. Masing-masing pakai React Query, 
 **Status tiap widget:**
 
 - Loading: skeleton seukuran kartu.
-- Error/offline: kartu tetap tampil dengan teks pelan "Lagi offline". Retry React Query dibatasi 2 kali.
+- Error/offline: kartu tetap tampil dengan teks pelan "Offline right now". Retry React Query dibatasi 2 kali.
 - `reauth_required`: sama kayak offline. Di sisi publik ga ada detail teknis.
 - Polling berhenti kalau tab disembunyikan (default React Query).
 
