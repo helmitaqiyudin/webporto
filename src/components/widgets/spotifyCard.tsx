@@ -28,7 +28,7 @@ function TrackRow({ track }: { track: TrackSummary }) {
                 </div>
             )}
             <div className="min-w-0">
-                <a href={track.url} target="_blank" rel="noopener" className="block truncate text-sm font-medium hover:underline">
+                <a href={track.url} target="_blank" rel="noopener noreferrer" className="block truncate text-sm font-medium hover:underline">
                     {track.name}
                 </a>
                 <p className="truncate text-xs text-muted-foreground">{track.artists.join(", ")}</p>

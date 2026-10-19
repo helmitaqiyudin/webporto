@@ -48,14 +48,14 @@ function ProjectCard({ project }: { project: Project }) {
                     <div className="mt-auto flex gap-2">
                         {project.links.demo && (
                             <Button asChild variant="outline" size="sm">
-                                <Link href={project.links.demo} target="_blank" rel="noopener">
+                                <Link href={project.links.demo} target="_blank" rel="noopener noreferrer">
                                     Live <ExternalLink className="size-3.5" />
                                 </Link>
                             </Button>
                         )}
                         {project.links.repo && (
                             <Button asChild variant="outline" size="sm">
-                                <Link href={project.links.repo} target="_blank" rel="noopener">
+                                <Link href={project.links.repo} target="_blank" rel="noopener noreferrer">
                                     Code <FiGithub className="size-3.5" />
                                 </Link>
                             </Button>
