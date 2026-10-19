@@ -12,11 +12,12 @@ let root: Root | null = null;
 const mount = (ui: React.ReactNode) => {
   const container = document.createElement("div");
   document.body.appendChild(container);
-  root = createRoot(container);
-  act(() => root!.render(ui));
+  const created = createRoot(container);
+  root = created;
+  act(() => created.render(ui));
   return container;
 };
-const button = (c: HTMLElement, label: string) => c.querySelector<HTMLButtonElement>(`button[aria-label="${label}"]`)!;
+const button = (c: HTMLElement, label: string) => c.querySelector(`button[aria-label="${label}"]`) as HTMLButtonElement;
 
 afterEach(() => {
   act(() => root?.unmount());
