@@ -36,6 +36,8 @@ export default function ActivityHeatmap() {
     }, [heatmap]);
 
     const state = widgetState(activity);
+    const days = heatmap ? heatmap.weeks.flat().filter((c): c is HeatCell => c !== null) : [];
+    const firstRow = heatmap ? heatmap.weeks[0].findIndex((c) => c !== null) + 1 : 1;
 
     return (
         <WidgetCard title="GitHub + Bitbucket" icon={<GitCommitHorizontal className="size-3.5" />} state={state} className="sm:col-span-2">
@@ -51,25 +53,21 @@ export default function ActivityHeatmap() {
                             className="grid w-max grid-flow-col grid-rows-7 gap-[2px]"
                             onMouseLeave={() => setSelected(null)}
                         >
-                            {heatmap.weeks.flatMap((week, w) =>
-                                Array.from({ length: 7 }, (_, d) => {
-                                    const cell = week[d] ?? null;
-                                    if (!cell) return <div key={`pad-${w}-${d}`} className="size-[9px]" aria-hidden />;
-                                    return (
-                                        <div
-                                            key={cell.date}
-                                            aria-hidden
-                                            className={cn(
-                                                "size-[9px] rounded-[2px]",
-                                                LEVEL_CLASS[cell.level],
-                                                selected?.date === cell.date && "ring-1 ring-foreground",
-                                            )}
-                                            onMouseEnter={() => setSelected(cell)}
-                                            onClick={() => setSelected(cell)}
-                                        />
-                                    );
-                                }),
-                            )}
+                            {days.map((cell, i) => (
+                                <div
+                                    key={cell.date}
+                                    aria-hidden
+                                    // The first day starts on its weekday row; the grid flows the rest.
+                                    style={i === 0 ? { gridRowStart: firstRow } : undefined}
+                                    className={cn(
+                                        "size-[9px] rounded-[2px]",
+                                        LEVEL_CLASS[cell.level],
+                                        selected?.date === cell.date && "ring-1 ring-foreground",
+                                    )}
+                                    onMouseEnter={() => setSelected(cell)}
+                                    onClick={() => setSelected(cell)}
+                                />
+                            ))}
                         </div>
                     </div>
                     <div className="flex min-h-4 items-center text-xs text-muted-foreground">

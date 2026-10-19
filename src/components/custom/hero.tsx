@@ -32,9 +32,9 @@ export default function Hero() {
                             per={"char"} />
                     </div>
                     <div className="flex gap-1 md:self-center">
-                        {socials.map((social, index) => (
+                        {socials.map((social) => (
                             <Socials
-                                key={index}
+                                key={social.href}
                                 href={social.href}
                                 icon={social.icon}
                                 variant={social.variant}
