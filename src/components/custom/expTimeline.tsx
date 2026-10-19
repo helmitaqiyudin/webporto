@@ -4,8 +4,8 @@ import { experience } from "@/data/experience"
 export default function ExperienceTimeline() {
     return (
         <div className="space-y-8">
-            {experience.map((item, index) => (
-                <div key={index} className="relative pl-12 before:absolute before:left-5 before:top-2 before:h-full before:w-[2px] before:bg-border">
+            {experience.map((item) => (
+                <div key={`${item.company}-${item.date}`} className="relative pl-12 before:absolute before:left-5 before:top-2 before:h-full before:w-[2px] before:bg-border">
                     <div className="absolute left-0 top-1 h-10 w-10 rounded-full border border-border/50 overflow-hidden">
                         <Image
                             src={item.logo}

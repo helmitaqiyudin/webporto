@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 const WIDTH = 140;
 const HEIGHT = 90;
 
-// Draws the run's route without a map library; treadmill runs have no route and get an icon.
+/** Draws the run's route without a map library; treadmill runs have no route and get an icon. */
 export default function RouteSvg({ polyline, className }: { polyline: string | null; className?: string }) {
     const path = polyline ? toSvgPath(decodePolyline(polyline), WIDTH, HEIGHT, 6) : "";
 

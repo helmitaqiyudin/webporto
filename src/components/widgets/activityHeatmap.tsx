@@ -19,6 +19,7 @@ const LEVEL_CLASS = [
     "bg-emerald-700 dark:bg-emerald-300",
 ];
 
+/** A year of GitHub + Bitbucket contributions as a calendar heatmap. */
 export default function ActivityHeatmap() {
     const activity = useQuery({
         queryKey: ["activity"],

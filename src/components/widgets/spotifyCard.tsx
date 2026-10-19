@@ -36,6 +36,7 @@ function TrackRow({ track }: { track: TrackSummary }) {
     );
 }
 
+/** What Helmi is playing (or last played) on Spotify, with a button to suggest a song. */
 export default function SpotifyCard() {
     const [dialogOpen, setDialogOpen] = useState(false);
     const [now, setNow] = useState(() => Date.now());

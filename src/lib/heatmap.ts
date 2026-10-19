@@ -5,7 +5,7 @@ export type HeatCell = { date: string; github: number; bitbucket: number; total:
 // Nearest-rank quantile over an ascending list.
 const quantile = (sorted: number[], p: number) => sorted[Math.max(0, Math.ceil(p * sorted.length) - 1)];
 
-// Columns are Sunday-first weeks; the first column is padded with nulls before the first day.
+/** Columns are Sunday-first weeks; the first column is padded with nulls before the first day. */
 export function buildHeatmap(days: ActivityDays): { weeks: (HeatCell | null)[][]; total: number } {
   const dates = Object.keys(days).sort();
   const totals = dates.map((d) => days[d].github + days[d].bitbucket);

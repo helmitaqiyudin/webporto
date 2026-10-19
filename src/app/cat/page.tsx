@@ -175,7 +175,7 @@ function Cat({ mouseScreenPos }: { mouseScreenPos: { x: number; y: number } }) {
                 startFrame={4}
                 position={[0, 0, PLANE_Z]}
                 autoPlay={isWakingUp}
-                playBackwards={true}
+                playBackwards
                 fps={8}
                 numberOfFrames={5}
                 scale={1}

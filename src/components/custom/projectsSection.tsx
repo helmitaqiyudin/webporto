@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { projects, type Project } from "@/data/projects";
 
+/** One project: summary, highlights, stack, and links (or an Internal badge). */
 function ProjectCard({ project }: { project: Project }) {
     return (
         <Card className="flex flex-col gap-3 overflow-hidden bg-background/70 backdrop-blur-sm">
@@ -66,6 +67,7 @@ function ProjectCard({ project }: { project: Project }) {
     );
 }
 
+/** Grid of project cards from src/data/projects.ts. */
 export default function ProjectsSection() {
     return (
         <section className="flex flex-col gap-3">

@@ -7,12 +7,13 @@ import { stepSpring, type SpringConfig } from "@/lib/spring";
 
 const scaleSpring: SpringConfig = { stiffness: 300, damping: 10 };
 
+/** Loads and renders the GLB head model. */
 function Model({ url }: { url: string }) {
     const { scene } = useGLTF(url);
     return <primitive object={scene} scale={.4} />;
 }
 
-// Grows from 1 to 2 on load and to 3 while hovered, with a springy overshoot.
+/** Grows from 1 to 2 on load and to 3 while hovered, with a springy overshoot. */
 function BouncyHead() {
     const groupRef = useRef<Group>(null);
     const hovered = useRef(false);
@@ -35,6 +36,7 @@ function BouncyHead() {
     );
 }
 
+/** Canvas for the draggable, bouncy 3D head. */
 export default function HeadModel() {
     return (
         <Canvas shadows camera={{ position: [0, 1, 3], fov: 80 }}>

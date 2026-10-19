@@ -1,3 +1,4 @@
+/** Copyright line at the bottom of the page. */
 export default function SiteFooter() {
     const year = new Date().getFullYear();
 

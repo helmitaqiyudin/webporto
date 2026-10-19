@@ -1,6 +1,6 @@
 export type LatLng = [number, number];
 
-// Google encoded polyline format, precision 1e5.
+/** Google encoded polyline format, precision 1e5. */
 export function decodePolyline(encoded: string): LatLng[] {
   const points: LatLng[] = [];
   let index = 0;
@@ -27,7 +27,7 @@ export function decodePolyline(encoded: string): LatLng[] {
   return points;
 }
 
-// Fits the route into the box with one scale for both axes (no stretching), centered, north up.
+/** Fits the route into the box with one scale for both axes (no stretching), centered, north up. */
 export function toSvgPath(points: LatLng[], width: number, height: number, padding: number): string {
   if (points.length < 2) return "";
   const lats = points.map((p) => p[0]);

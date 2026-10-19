@@ -15,6 +15,7 @@ interface SuggestSongDialogProps {
     onOpenChange: (open: boolean) => void;
 }
 
+/** Search Spotify and add a track to Helmi's queue. */
 export default function SuggestSongDialog({ open, onOpenChange }: SuggestSongDialogProps) {
     const [text, setText] = useState("");
     const [query] = useDebounceValue(text.trim(), 300);

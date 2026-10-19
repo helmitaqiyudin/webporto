@@ -20,6 +20,7 @@ function Metric({ label, value }: { label: string; value: string }) {
     );
 }
 
+/** Latest public Strava run with its route, plus yearly and 4-week totals. */
 export default function StravaCard() {
     const recent = useQuery({
         queryKey: ["strava", "recent"],

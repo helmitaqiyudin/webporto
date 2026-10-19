@@ -7,7 +7,7 @@ import SpotifyCard from "./spotifyCard";
 import StravaCard from "./stravaCard";
 import WidgetCard from "./widgetCard";
 
-// Each widget renders bad API data inside its own boundary, falling back to its offline card.
+/** Each widget renders bad API data inside its own boundary, falling back to its offline card. */
 export default function WidgetGrid() {
     return (
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">

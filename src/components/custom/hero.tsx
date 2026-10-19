@@ -7,6 +7,7 @@ import { HeadModelLazy } from "@/components/custom/lazy3d";
 import ErrorBoundary from "@/components/core/errorBoundary";
 import { socials } from "@/data/socials";
 
+/** Name, role, links, and bio beside the 3D head. */
 export default function Hero() {
     return (
         <section className="flex flex-col gap-4 sm:grid sm:grid-cols-[160px_1fr] sm:items-center">

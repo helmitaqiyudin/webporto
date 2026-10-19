@@ -41,6 +41,7 @@ function ActivityLine({ activity, timer }: { activity: Activity; timer?: string 
     );
 }
 
+/** Discord presence from Lanyard: status, custom status, and current activities. */
 export default function DiscordCard() {
     const [now, setNow] = useState(() => Date.now());
     useInterval(() => setNow(Date.now()), 1000);
