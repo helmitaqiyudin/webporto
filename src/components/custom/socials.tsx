@@ -10,7 +10,7 @@ interface SocialsProps {
 
 export default function Socials({ href, icon, variant, text }: SocialsProps) {
     return (
-        <Link href={href} target="_blank">
+        <Link href={href} target="_blank" rel="noopener noreferrer">
             <Button variant={variant === "outline" ? "outline" : "ghost"}>
                 {text && <span className="font-semibold mr-1">{text}</span>}
                 {icon}
