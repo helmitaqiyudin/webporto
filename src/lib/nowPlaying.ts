@@ -12,3 +12,9 @@ export function queueMessage(result: "ok" | string): string {
   if (result === "not_listening") return "Helmi isn't listening right now";
   return "Couldn't add that song. Try again.";
 }
+
+/** Visitor-facing copy for a failed play/pause/next/previous. */
+export function controlMessage(code: string): string {
+  if (code === "not_listening") return "Helmi isn't listening right now";
+  return "Couldn't reach Spotify. Try again.";
+}

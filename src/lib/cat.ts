@@ -3,7 +3,8 @@ export type CatState = { x: number; y: number; facing: 1 | -1; mode: CatMode; mo
 export type Point = { x: number; y: number };
 
 const SPEED = 180; // px per second
-const STOP_DISTANCE = 16; // sits down this close to the cursor instead of jittering on it
+const STOP_DISTANCE = 56; // sits this far from the cursor so it never covers the pointer
+const START_DISTANCE = 80; // a seated cat only gets up again once the cursor moves this far
 const SLEEP_AFTER = 10; // seconds idle
 const MAX_DT = 0.1; // a background tab resumes with one huge frame; don't teleport
 
@@ -29,7 +30,8 @@ export function stepCat(s: CatState, target: Point | null, cursorMoved: boolean,
   const dy = target ? target.y - next.y : 0;
   const distance = Math.hypot(dx, dy);
 
-  if (distance > STOP_DISTANCE) {
+  const threshold = next.mode === "run" ? STOP_DISTANCE : START_DISTANCE;
+  if (distance > threshold) {
     const move = Math.min(SPEED * step, distance - STOP_DISTANCE);
     next = enter(next, "run");
     next = {

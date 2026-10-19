@@ -2,16 +2,17 @@
 
 import Image from "next/image";
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useInterval } from "usehooks-ts";
 import { Music } from "lucide-react";
 import { SiSpotify } from "react-icons/si";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { apiGet } from "@/lib/api";
+import { ApiError, apiGet, apiPost } from "@/lib/api";
 import { formatDuration, formatRelativeTime } from "@/lib/format";
-import { currentProgressMs } from "@/lib/nowPlaying";
+import { controlMessage, currentProgressMs } from "@/lib/nowPlaying";
 import type { NowPlaying, RecentTrack, TrackSummary } from "@/types/api";
+import PlaybackControls, { type PlaybackAction } from "./playbackControls";
 import SuggestSongDialog from "./suggestSongDialog";
 import { widgetState } from "@/lib/widgetState";
 import WidgetCard from "./widgetCard";
@@ -37,7 +38,7 @@ function TrackRow({ track }: { track: TrackSummary }) {
     );
 }
 
-/** What Helmi is playing (or last played) on Spotify, with a button to suggest a song. */
+/** What Helmi is playing (or last played) on Spotify, with playback controls and a button to suggest a song. */
 export default function SpotifyCard() {
     const [dialogOpen, setDialogOpen] = useState(false);
     const [now, setNow] = useState(() => Date.now());
@@ -49,31 +50,47 @@ export default function SpotifyCard() {
     });
     const np = nowPlaying.data;
     const playing = Boolean(np?.isPlaying && np.track);
+    // A paused track is still "current": show it with a play button instead of falling back to last played.
+    const current = np?.track ?? null;
 
     const recent = useQuery({
         queryKey: ["spotify", "recent"],
         queryFn: () => apiGet<RecentTrack>("/spotify/recent"),
-        enabled: nowPlaying.isSuccess && !playing,
+        enabled: nowPlaying.isSuccess && !current,
         staleTime: 60_000,
+    });
+
+    const queryClient = useQueryClient();
+    const control = useMutation({
+        mutationFn: (action: PlaybackAction) => apiPost<{ ok: true }>(`/spotify/${action}`, {}),
+        onSettled: () => queryClient.invalidateQueries({ queryKey: ["spotify", "now-playing"] }),
     });
 
     useInterval(() => setNow(Date.now()), playing ? 1000 : null);
 
     const state = widgetState(nowPlaying);
     // Measure from when this browser received the data, so a skewed visitor clock can't move the bar.
-    const progressMs = np && playing ? currentProgressMs({ ...np, fetchedAt: nowPlaying.dataUpdatedAt }, now) : 0;
+    const progressMs = np && current ? currentProgressMs({ ...np, fetchedAt: nowPlaying.dataUpdatedAt }, now) : 0;
     const durationMs = np?.track?.durationMs ?? 0;
 
     return (
         <>
             <WidgetCard title="Spotify" icon={<SiSpotify className="size-3.5 text-[#1DB954]" />} state={state}>
-                {playing && np?.track ? (
+                {current ? (
                     <div className="flex flex-col gap-2">
-                        <TrackRow track={np.track} />
+                        <TrackRow track={current} />
                         <Progress value={durationMs ? (progressMs / durationMs) * 100 : 0} className="h-1" />
-                        <p className="text-right text-xs tabular-nums text-muted-foreground">
-                            {formatDuration(progressMs / 1000)} / {formatDuration(durationMs / 1000)}
-                        </p>
+                        <div className="flex items-center justify-between gap-2">
+                            <PlaybackControls isPlaying={playing} pending={control.isPending} onAction={(action) => control.mutate(action)} />
+                            <p className="text-xs tabular-nums text-muted-foreground">
+                                {formatDuration(progressMs / 1000)} / {formatDuration(durationMs / 1000)}
+                            </p>
+                        </div>
+                        {control.isError && (
+                            <p role="status" className="text-xs text-muted-foreground">
+                                {controlMessage(control.error instanceof ApiError ? control.error.code : "error")}
+                            </p>
+                        )}
                     </div>
                 ) : recent.data ? (
                     <div className="flex flex-col gap-2">

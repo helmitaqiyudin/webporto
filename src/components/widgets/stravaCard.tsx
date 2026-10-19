@@ -3,28 +3,19 @@
 import { useQuery } from "@tanstack/react-query";
 import { SiStrava } from "react-icons/si";
 import { apiGet } from "@/lib/api";
-import { formatDuration, formatKm, formatPace, formatRelativeTime } from "@/lib/format";
+import { formatKm } from "@/lib/format";
 import type { StravaRun, StravaStats } from "@/types/api";
-import RouteSvg from "./routeSvg";
+import RunCarousel from "./runCarousel";
 import { widgetState } from "@/lib/widgetState";
 import WidgetCard from "./widgetCard";
 
 const FIVE_MINUTES = 5 * 60_000;
 
-function Metric({ label, value }: { label: string; value: string }) {
-    return (
-        <div>
-            <p className="text-xs text-muted-foreground">{label}</p>
-            <p className="text-sm font-medium tabular-nums">{value}</p>
-        </div>
-    );
-}
-
-/** Latest public Strava run with its route, plus yearly and 4-week totals. */
+/** Recent public Strava runs (browsable) with their routes, plus yearly and 4-week totals. */
 export default function StravaCard() {
-    const recent = useQuery({
-        queryKey: ["strava", "recent"],
-        queryFn: () => apiGet<StravaRun | null>("/strava/recent"),
+    const runs = useQuery({
+        queryKey: ["strava", "runs"],
+        queryFn: () => apiGet<StravaRun[]>("/strava/runs"),
         refetchInterval: FIVE_MINUTES,
     });
     const stats = useQuery({
@@ -33,27 +24,12 @@ export default function StravaCard() {
         refetchInterval: FIVE_MINUTES,
     });
 
-    const state = widgetState(recent);
-    const run = recent.data;
+    const state = widgetState(runs);
 
     return (
         <WidgetCard title="Strava" icon={<SiStrava className="size-3.5 text-[#FC4C02]" />} state={state} className="sm:col-span-2">
-            {run ? (
-                <div className="flex flex-col gap-4 sm:flex-row">
-                    <RouteSvg polyline={run.polyline} className="h-[90px] w-full shrink-0 rounded-md bg-muted/40 sm:w-[140px]" />
-                    <div className="flex min-w-0 flex-1 flex-col gap-3">
-                        <div className="min-w-0">
-                            <p className="truncate text-sm font-medium">{run.name}</p>
-                            <p className="text-xs text-muted-foreground">Last run · {formatRelativeTime(run.startDate, new Date())}</p>
-                        </div>
-                        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                            <Metric label="Distance" value={formatKm(run.distanceM)} />
-                            <Metric label="Pace" value={formatPace(run.avgPaceSPerKm)} />
-                            <Metric label="Time" value={formatDuration(run.movingTimeS)} />
-                            <Metric label="Elevation" value={`${Math.round(run.elevationM)} m`} />
-                        </div>
-                    </div>
-                </div>
+            {runs.data && runs.data.length > 0 ? (
+                <RunCarousel runs={runs.data} />
             ) : (
                 <p className="text-sm text-muted-foreground">No public runs yet</p>
             )}

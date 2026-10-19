@@ -15,7 +15,7 @@ it("stops next to the cursor instead of overshooting or jittering on it", () => 
   let s = at(0, 0);
   for (let i = 0; i < 200; i++) s = stepCat(s, { x: 100, y: 0 }, false, 1 / 60);
   expect(s.mode).toBe("idle");
-  expect(100 - s.x).toBeCloseTo(16, 0); // stops at the stop distance
+  expect(100 - s.x).toBeCloseTo(56, 0); // sits a radius away so it never covers the pointer
   const still = stepCat(s, { x: 100, y: 0 }, false, 1 / 60);
   expect(still.x).toBe(s.x);
 });
@@ -52,4 +52,10 @@ it("picks sprite frames per mode", () => {
   expect(catFrame("sleep", 10)).toEqual({ sheet: "sleep", frame: 4 }); // plays once, then holds
   expect(catFrame("wake", 0)).toEqual({ sheet: "sleep", frame: 4 }); // sleep frames backwards
   expect(catFrame("wake", 10)).toEqual({ sheet: "sleep", frame: 0 });
+});
+
+it("stays seated for small cursor moves near the radius and runs again for bigger ones", () => {
+  const seated = at(0, 0);
+  expect(stepCat(seated, { x: 70, y: 0 }, true, 1 / 60).mode).toBe("idle");
+  expect(stepCat(seated, { x: 90, y: 0 }, true, 1 / 60).mode).toBe("run");
 });
