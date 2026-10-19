@@ -1,292 +1,72 @@
-'use client';
-import { SpriteAnimator } from "@react-three/drei";
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { useRef, useState, useEffect, useMemo } from "react";
-import * as THREE from "three";
+"use client";
 
-const PLANE_Z = -2;
-const SPEED = 1.5;
-const STOP_DISTANCE = 1;
-const DELTA_TIME = 1 / 60;
-const IDLE_TO_SLEEP_TIME = 10;
+import { useEffect, useRef } from "react";
+import { CAT_FRAMES, catFrame, initialCat, stepCat, type Point } from "@/lib/cat";
 
-function screenToWorldPos(
-    screenPos: { x: number; y: number },
-    camera: THREE.Camera,
-    size: { width: number; height: number },
-    planeZ: number
-): { x: number; y: number } {
-    const normalizedX = (screenPos.x / size.width) * 2 - 1;
-    const normalizedY = -(screenPos.y / size.height) * 2 + 1;
+const SIZE = 48; // the sheets are 64 px frames, drawn at 3/4 size
 
-    const raycaster = new THREE.Raycaster();
-    raycaster.setFromCamera(new THREE.Vector2(normalizedX, normalizedY), camera);
-
-    const direction = raycaster.ray.direction.clone();
-    const distance = (planeZ - camera.position.z) / direction.z;
-    const worldPos = raycaster.ray.origin.clone().add(direction.multiplyScalar(distance));
-
-    return { x: worldPos.x, y: worldPos.y };
-}
-
-function Cat({ mouseScreenPos }: { mouseScreenPos: { x: number; y: number } }) {
-    const { camera, size } = useThree();
-    const idleRef = useRef<THREE.Group>(null);
-    const runRef = useRef<THREE.Group>(null);
-    const sleepRef = useRef<THREE.Group>(null);
-    const wakeRef = useRef<THREE.Group>(null);
-    const catPos = useRef({ x: 0, y: 0 });
-    const [flipX, setFlipX] = useState(false);
-    const idleTimeRef = useRef(0);
-    const [isSleeping, setIsSleeping] = useState(false);
-    const [isWakingUp, setIsWakingUp] = useState(false);
-    const prevMousePosRef = useRef({ x: 0, y: 0 });
-    const wakeStartTimeRef = useRef(0);
-    const WAKE_ANIMATION_DURATION = 5 / 8;
-
-    const textureUrls = useMemo(() => {
-        return {
-            idle: `/models/idle.png`,
-            run: `/models/run.png`,
-            sleep: `/models/sleep.png`,
-        };
-    }, []);
-
-    useFrame((state, delta) => {
-        const targetPos = screenToWorldPos(mouseScreenPos, camera, size, PLANE_Z);
-
-        const dx = targetPos.x - catPos.current.x;
-        const dy = targetPos.y - catPos.current.y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-        const isRunning = distance > STOP_DISTANCE;
-
-        const mouseMoved =
-            prevMousePosRef.current.x !== mouseScreenPos.x ||
-            prevMousePosRef.current.y !== mouseScreenPos.y;
-        prevMousePosRef.current = { x: mouseScreenPos.x, y: mouseScreenPos.y };
-
-        if (isSleeping && mouseMoved && !isWakingUp) {
-            setIsWakingUp(true);
-            wakeStartTimeRef.current = 0;
-        }
-
-        if (!isRunning && !isSleeping && !isWakingUp) {
-            idleTimeRef.current += delta;
-            if (idleTimeRef.current >= IDLE_TO_SLEEP_TIME) {
-                setIsSleeping(true);
-                idleTimeRef.current = 0;
-            }
-        } else if (isRunning || isWakingUp) {
-            idleTimeRef.current = 0;
-        }
-
-        if (isRunning && !isSleeping && !isWakingUp) {
-            const angle = Math.atan2(dy, dx);
-            const moveDistance = SPEED * DELTA_TIME;
-            catPos.current.x += Math.cos(angle) * moveDistance;
-            catPos.current.y += Math.sin(angle) * moveDistance;
-
-            const shouldFlipX = Math.cos(angle) < 0;
-            if (flipX !== shouldFlipX) {
-                setFlipX(shouldFlipX);
-            }
-        }
-
-        if (isWakingUp) {
-            wakeStartTimeRef.current += delta;
-
-            let animationFinished = false;
-
-            if (wakeStartTimeRef.current >= WAKE_ANIMATION_DURATION) {
-                animationFinished = true;
-            }
-
-            if (wakeRef.current) {
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                const wakeAnimator = wakeRef.current as any;
-                if (wakeAnimator.currentFrame !== undefined && wakeAnimator.currentFrame <= 0) {
-                    animationFinished = true;
-                }
-            }
-
-            if (animationFinished) {
-                setIsWakingUp(false);
-                setIsSleeping(false);
-                wakeStartTimeRef.current = 0;
-            }
-        }
-
-        const updateSprite = (ref: React.RefObject<THREE.Group>) => {
-            if (ref.current) {
-                ref.current.position.set(catPos.current.x, catPos.current.y, PLANE_Z);
-            }
-        };
-
-        updateSprite(idleRef);
-        updateSprite(runRef);
-        updateSprite(sleepRef);
-        updateSprite(wakeRef);
-
-        if (idleRef.current) idleRef.current.visible = !isRunning && !isSleeping && !isWakingUp;
-        if (runRef.current) runRef.current.visible = isRunning && !isSleeping && !isWakingUp;
-        if (sleepRef.current) sleepRef.current.visible = isSleeping && !isWakingUp;
-        if (wakeRef.current) wakeRef.current.visible = isWakingUp;
-    });
-
-    return (
-        <>
-            <SpriteAnimator
-                ref={idleRef}
-                textureImageURL={textureUrls.idle}
-                startFrame={0}
-                position={[0, 0, PLANE_Z]}
-                autoPlay
-                loop
-                fps={8}
-                numberOfFrames={6}
-                scale={.7}
-                flipX={!flipX}
-            />
-            <SpriteAnimator
-                ref={runRef}
-                textureImageURL={textureUrls.run}
-                startFrame={0}
-                position={[0, 0, PLANE_Z]}
-                autoPlay
-                loop
-                fps={24}
-                numberOfFrames={12}
-                scale={.7}
-                visible={false}
-                flipX={flipX}
-            />
-            <SpriteAnimator
-                ref={sleepRef}
-                textureImageURL={textureUrls.sleep}
-                startFrame={0}
-                position={[0, 0, PLANE_Z]}
-                autoPlay={isSleeping && !isWakingUp}
-                fps={8}
-                numberOfFrames={5}
-                scale={.7}
-                visible={false}
-                flipX={flipX}
-            />
-            <SpriteAnimator
-                ref={wakeRef}
-                textureImageURL={textureUrls.sleep}
-                startFrame={4}
-                position={[0, 0, PLANE_Z]}
-                autoPlay={isWakingUp}
-                playBackwards={true}
-                fps={8}
-                numberOfFrames={5}
-                scale={.7}
-                visible={false}
-                flipX={flipX}
-            />
-        </>
-    );
-}
-
-interface InteractiveCatProps {
-    className?: string;
-}
-
-export default function InteractiveCat({ className = "" }: InteractiveCatProps) {
-    const [mouseScreenPos, setMouseScreenPos] = useState({ x: 0, y: 0 });
-    const [isMounted, setIsMounted] = useState(false);
-    const containerRef = useRef<HTMLDivElement>(null);
-
-    const updateMousePos = (clientX: number, clientY: number) => {
-        if (!containerRef.current) return;
-        const rect = containerRef.current.getBoundingClientRect();
-        setMouseScreenPos({
-            x: clientX - rect.left,
-            y: clientY - rect.top,
-        });
-    };
+/**
+ * A small pixel cat that walks to wherever the cursor (or finger) last was, sits down next to it,
+ * and naps after ten quiet seconds. It lives in viewport coordinates, so scrolling never confuses it.
+ */
+export default function InteractiveCat() {
+    const ref = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        setIsMounted(true);
-    }, []);
+        const el = ref.current;
+        if (!el || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-    useEffect(() => {
-        if (!isMounted || typeof window === 'undefined') return;
+        for (const sheet of ["idle", "run", "sleep"]) new Image().src = `/models/${sheet}.png`;
 
-        // Initialize mouse position to center of viewport
-        const updateInitialPos = () => {
-            setMouseScreenPos({
-                x: window.innerWidth / 2,
-                y: window.innerHeight / 2 + window.scrollY,
-            });
+        let cat = initialCat(SIZE, window.innerHeight - SIZE);
+        let target: Point | null = null;
+        let moved = false;
+        const pointAt = (x: number, y: number) => {
+            target = { x, y };
+            moved = true;
         };
-        updateInitialPos();
-
-        // Use global mouse move listener so we don't interfere with text selection
-        const handleMouseMove = (e: MouseEvent) => {
-            updateMousePos(e.clientX, e.clientY);
-        };
-
-        const handleTouchMove = (e: TouchEvent) => {
+        const onMouse = (e: MouseEvent) => pointAt(e.clientX, e.clientY);
+        const onTouch = (e: TouchEvent) => {
             const touch = e.touches[0];
-            if (touch) {
-                updateMousePos(touch.clientX, touch.clientY);
-            }
+            if (touch) pointAt(touch.clientX, touch.clientY);
         };
+        window.addEventListener("mousemove", onMouse, { passive: true });
+        window.addEventListener("touchstart", onTouch, { passive: true });
+        window.addEventListener("touchmove", onTouch, { passive: true });
 
-        window.addEventListener('mousemove', handleMouseMove);
-        window.addEventListener('touchmove', handleTouchMove, { passive: true });
+        let last = performance.now();
+        let raf = 0;
+        const tick = (now: number) => {
+            cat = stepCat(cat, target, moved, (now - last) / 1000);
+            moved = false;
+            last = now;
+
+            const { sheet, frame } = catFrame(cat.mode, cat.modeTime);
+            // The idle sheet faces left; the run and sleep sheets face right.
+            const flip = sheet === "idle" ? -cat.facing : cat.facing;
+            el.style.transform = `translate3d(${cat.x - SIZE / 2}px, ${cat.y - SIZE / 2}px, 0) scaleX(${flip})`;
+            el.style.backgroundImage = `url(/models/${sheet}.png)`;
+            el.style.backgroundSize = `${CAT_FRAMES[sheet] * SIZE}px ${SIZE}px`;
+            el.style.backgroundPosition = `-${frame * SIZE}px 0`;
+            el.style.opacity = "1";
+            raf = requestAnimationFrame(tick);
+        };
+        raf = requestAnimationFrame(tick);
 
         return () => {
-            window.removeEventListener('mousemove', handleMouseMove);
-            window.removeEventListener('touchmove', handleTouchMove);
+            cancelAnimationFrame(raf);
+            window.removeEventListener("mousemove", onMouse);
+            window.removeEventListener("touchstart", onTouch);
+            window.removeEventListener("touchmove", onTouch);
         };
-    }, [isMounted]);
-
-    // Update container height when document height changes
-    useEffect(() => {
-        if (!isMounted || typeof document === 'undefined') return;
-
-        const updateHeight = () => {
-            if (containerRef.current) {
-                const docHeight = Math.max(
-                    document.body.scrollHeight,
-                    document.body.offsetHeight,
-                    document.documentElement.clientHeight,
-                    document.documentElement.scrollHeight,
-                    document.documentElement.offsetHeight
-                );
-                containerRef.current.style.height = `${docHeight}px`;
-            }
-        };
-
-        updateHeight();
-        window.addEventListener('resize', updateHeight);
-        // Use MutationObserver to detect content changes
-        const observer = new MutationObserver(updateHeight);
-        observer.observe(document.body, { childList: true, subtree: true });
-
-        return () => {
-            window.removeEventListener('resize', updateHeight);
-            observer.disconnect();
-        };
-    }, [isMounted]);
-
-    if (!isMounted) {
-        return null;
-    }
+    }, []);
 
     return (
         <div
-            ref={containerRef}
-            className={`absolute top-0 left-0 w-full pointer-events-none ${className}`}
-            style={{ userSelect: 'none', minHeight: '100vh' }}
-        >
-            <Canvas camera={{ position: [0, 0, 5] }} style={{ pointerEvents: 'none' }}>
-                <Cat mouseScreenPos={mouseScreenPos} />
-            </Canvas>
-        </div>
+            ref={ref}
+            aria-hidden
+            className="pointer-events-none fixed left-0 top-0 z-40 opacity-0 [image-rendering:pixelated]"
+            style={{ width: SIZE, height: SIZE, backgroundRepeat: "no-repeat" }}
+        />
     );
 }
-

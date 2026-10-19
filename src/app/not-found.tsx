@@ -1,21 +1,8 @@
-'use client'
-
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
-import { useEffect, useState } from "react"
 import { HomeIcon } from 'lucide-react'
 
 export default function Custom404() {
-    const [mounted, setMounted] = useState(false)
-
-    useEffect(() => {
-        setMounted(true)
-    }, [])
-
-    if (!mounted) {
-        return null
-    }
-
     return (
         <div className="min-h-screen w-full flex flex-col items-center justify-center p-4 text-center">
             <div className="space-y-4">
