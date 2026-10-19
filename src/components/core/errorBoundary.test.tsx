@@ -16,11 +16,11 @@ afterEach(() => {
 });
 
 it("renders the fallback instead of letting a widget crash the page", async () => {
-  vi.spyOn(console, "error").mockImplementation(() => {});
+  vi.spyOn(console, "error").mockImplementation(() => undefined);
   const container = document.createElement("div");
   document.body.appendChild(container);
   const root = createRoot(container);
-  await act(async () => {
+  await act(() => {
     root.render(
       <div>
         <p>Projects</p>
@@ -32,5 +32,5 @@ it("renders the fallback instead of letting a widget crash the page", async () =
   });
   expect(container.textContent).toContain("Projects");
   expect(container.textContent).toContain("Offline right now");
-  await act(async () => root.unmount());
+  await act(() => root.unmount());
 });

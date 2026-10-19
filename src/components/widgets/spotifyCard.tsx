@@ -16,6 +16,7 @@ import SuggestSongDialog from "./suggestSongDialog";
 import { widgetState } from "@/lib/widgetState";
 import WidgetCard from "./widgetCard";
 
+/** Cover, linked title, and artists for one track. */
 function TrackRow({ track }: { track: TrackSummary }) {
     return (
         <div className="flex min-w-0 items-center gap-3">

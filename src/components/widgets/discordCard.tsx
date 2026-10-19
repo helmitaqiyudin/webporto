@@ -20,12 +20,14 @@ const STATUS_DOT: Record<string, string> = {
     dnd: "bg-red-500",
 };
 
+/** Current presence for the configured Discord user from Lanyard. */
 async function fetchPresence(): Promise<DiscordData> {
     const res = await fetch(`https://api.lanyard.rest/v1/users/${DISCORD_USER_ID}`);
     if (!res.ok) throw new Error("Failed to fetch Discord presence");
     return res.json();
 }
 
+/** One Discord activity: verb and name, details, state, and elapsed time. */
 function ActivityLine({ activity, timer }: { activity: Activity; timer?: string }) {
     const verb = getStatusType(activity.type);
     return (

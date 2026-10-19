@@ -53,6 +53,7 @@ const DialogContent = React.forwardRef<
 ))
 DialogContent.displayName = DialogPrimitive.Content.displayName
 
+/** Title and description block at the top of a dialog. */
 const DialogHeader = ({
   className,
   ...props
