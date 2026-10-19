@@ -1,3 +1,4 @@
+import ActivityHeatmap from "./activityHeatmap";
 import DiscordCard from "./discordCard";
 import SpotifyCard from "./spotifyCard";
 import StravaCard from "./stravaCard";
@@ -8,6 +9,7 @@ export default function WidgetGrid() {
             <DiscordCard />
             <SpotifyCard />
             <StravaCard />
+            <ActivityHeatmap />
         </div>
     );
 }
