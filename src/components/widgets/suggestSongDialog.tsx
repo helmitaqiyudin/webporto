@@ -74,7 +74,7 @@ export default function SuggestSongDialog({ open, onOpenChange }: SuggestSongDia
                                     className="flex w-full items-center gap-3 rounded-md p-2 text-left transition-colors hover:bg-accent disabled:opacity-50"
                                 >
                                     {track.imageUrl ? (
-                                        <Image src={track.imageUrl} alt="" width={40} height={40} className="size-10 shrink-0 rounded" />
+                                        <Image src={track.imageUrl} alt="" width={40} height={40} unoptimized className="size-10 shrink-0 rounded" />
                                     ) : (
                                         <div className="flex size-10 shrink-0 items-center justify-center rounded bg-muted">
                                             <Music className="size-4 text-muted-foreground" />

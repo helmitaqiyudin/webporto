@@ -13,13 +13,14 @@ import { formatDuration, formatRelativeTime } from "@/lib/format";
 import { currentProgressMs } from "@/lib/nowPlaying";
 import type { NowPlaying, RecentTrack, TrackSummary } from "@/types/api";
 import SuggestSongDialog from "./suggestSongDialog";
-import WidgetCard, { type WidgetState } from "./widgetCard";
+import { widgetState } from "@/lib/widgetState";
+import WidgetCard from "./widgetCard";
 
 function TrackRow({ track }: { track: TrackSummary }) {
     return (
         <div className="flex min-w-0 items-center gap-3">
             {track.imageUrl ? (
-                <Image src={track.imageUrl} alt="" width={48} height={48} className="size-12 shrink-0 rounded" />
+                <Image src={track.imageUrl} alt="" width={48} height={48} unoptimized className="size-12 shrink-0 rounded" />
             ) : (
                 <div className="flex size-12 shrink-0 items-center justify-center rounded bg-muted">
                     <Music className="size-5 text-muted-foreground" />
@@ -56,38 +57,41 @@ export default function SpotifyCard() {
 
     useInterval(() => setNow(Date.now()), playing ? 1000 : null);
 
-    const state: WidgetState = nowPlaying.isError ? "error" : nowPlaying.isPending ? "loading" : "ready";
+    const state = widgetState(nowPlaying);
     // Measure from when this browser received the data, so a skewed visitor clock can't move the bar.
     const progressMs = np && playing ? currentProgressMs({ ...np, fetchedAt: nowPlaying.dataUpdatedAt }, now) : 0;
     const durationMs = np?.track?.durationMs ?? 0;
 
     return (
-        <WidgetCard title="Spotify" icon={<SiSpotify className="size-3.5 text-[#1DB954]" />} state={state}>
-            {playing && np?.track ? (
-                <div className="flex flex-col gap-2">
-                    <TrackRow track={np.track} />
-                    <Progress value={durationMs ? (progressMs / durationMs) * 100 : 0} className="h-1" />
-                    <p className="text-right text-xs tabular-nums text-muted-foreground">
-                        {formatDuration(progressMs / 1000)} / {formatDuration(durationMs / 1000)}
+        <>
+            <WidgetCard title="Spotify" icon={<SiSpotify className="size-3.5 text-[#1DB954]" />} state={state}>
+                {playing && np?.track ? (
+                    <div className="flex flex-col gap-2">
+                        <TrackRow track={np.track} />
+                        <Progress value={durationMs ? (progressMs / durationMs) * 100 : 0} className="h-1" />
+                        <p className="text-right text-xs tabular-nums text-muted-foreground">
+                            {formatDuration(progressMs / 1000)} / {formatDuration(durationMs / 1000)}
+                        </p>
+                    </div>
+                ) : recent.data ? (
+                    <div className="flex flex-col gap-2">
+                        <p className="text-xs text-muted-foreground">
+                            Last played · {formatRelativeTime(recent.data.playedAt, new Date(now))}
+                        </p>
+                        <TrackRow track={recent.data.track} />
+                    </div>
+                ) : (
+                    <p className="text-sm text-muted-foreground">
+                        {recent.isPending && recent.fetchStatus !== "idle" ? "Loading…" : "Nothing played recently"}
                     </p>
-                </div>
-            ) : recent.data ? (
-                <div className="flex flex-col gap-2">
-                    <p className="text-xs text-muted-foreground">
-                        Last played · {formatRelativeTime(recent.data.playedAt, new Date(now))}
-                    </p>
-                    <TrackRow track={recent.data.track} />
-                </div>
-            ) : (
-                <p className="text-sm text-muted-foreground">
-                    {recent.isPending && recent.fetchStatus !== "idle" ? "Loading…" : "Nothing played recently"}
-                </p>
-            )}
+                )}
 
-            <Button variant="outline" size="sm" className="self-start" onClick={() => setDialogOpen(true)}>
-                Suggest a song
-            </Button>
+                <Button variant="outline" size="sm" className="self-start" onClick={() => setDialogOpen(true)}>
+                    Suggest a song
+                </Button>
+            </WidgetCard>
+            {/* Outside the card's state gate, so a failed poll never closes it mid-search. */}
             <SuggestSongDialog open={dialogOpen} onOpenChange={setDialogOpen} />
-        </WidgetCard>
+        </>
     );
 }

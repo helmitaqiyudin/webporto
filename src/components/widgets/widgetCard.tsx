@@ -1,8 +1,9 @@
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
+import type { WidgetState } from "@/lib/widgetState";
 
-export type WidgetState = "loading" | "error" | "ready";
+export type { WidgetState };
 
 interface WidgetCardProps {
     title: string;

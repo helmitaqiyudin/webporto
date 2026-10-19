@@ -4,13 +4,17 @@ import { CustomTextEffect } from "@/components/textEffectWithDelay";
 import { TextShimmer } from "@/components/core/textShimmer";
 import Socials from "@/components/custom/socials";
 import { HeadModelLazy } from "@/components/custom/lazy3d";
+import ErrorBoundary from "@/components/core/errorBoundary";
 import { socials } from "@/data/socials";
 
 export default function Hero() {
     return (
         <section className="flex flex-col gap-4 sm:grid sm:grid-cols-[160px_1fr] sm:items-center">
             <div className="h-[220px] sm:h-[160px]">
-                <HeadModelLazy />
+                {/* No WebGL or a failed model load leaves an empty box instead of a crashed page. */}
+                <ErrorBoundary fallback={null}>
+                    <HeadModelLazy />
+                </ErrorBoundary>
             </div>
 
             <div className="flex flex-col gap-3">

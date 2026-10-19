@@ -7,6 +7,7 @@ import SiteFooter from "@/components/custom/siteFooter";
 import { InteractiveCatLazy } from "@/components/custom/lazy3d";
 import WidgetGrid from "@/components/widgets/widgetGrid";
 import ProjectsSection from "@/components/custom/projectsSection";
+import ErrorBoundary from "@/components/core/errorBoundary";
 
 export default function Home() {
   return (
@@ -17,7 +18,9 @@ export default function Home() {
         <ModeToggle />
       </div>
 
-      <InteractiveCatLazy className="z-10" />
+      <ErrorBoundary fallback={null}>
+        <InteractiveCatLazy className="z-10" />
+      </ErrorBoundary>
 
       <main className="mx-auto flex w-full max-w-[680px] flex-col gap-8 px-4 py-12 sm:px-6">
         <Hero />

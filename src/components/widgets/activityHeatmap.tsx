@@ -7,7 +7,9 @@ import { apiGet } from "@/lib/api";
 import { buildHeatmap, type HeatCell } from "@/lib/heatmap";
 import { cn } from "@/lib/utils";
 import type { ActivityResponse } from "@/types/api";
-import WidgetCard, { type WidgetState } from "./widgetCard";
+import { formatDay } from "@/lib/format";
+import { widgetState } from "@/lib/widgetState";
+import WidgetCard from "./widgetCard";
 
 const LEVEL_CLASS = [
     "bg-muted",
@@ -16,10 +18,6 @@ const LEVEL_CLASS = [
     "bg-emerald-500 dark:bg-emerald-500",
     "bg-emerald-700 dark:bg-emerald-300",
 ];
-
-// Day keys are calendar dates, so format them in UTC to keep the same day everywhere.
-const dayFormat = new Intl.DateTimeFormat("en", { dateStyle: "medium", timeZone: "UTC" });
-const formatDay = (date: string) => dayFormat.format(new Date(`${date}T00:00:00Z`));
 
 export default function ActivityHeatmap() {
     const activity = useQuery({
@@ -36,7 +34,7 @@ export default function ActivityHeatmap() {
         if (heatmap && scrollRef.current) scrollRef.current.scrollLeft = scrollRef.current.scrollWidth;
     }, [heatmap]);
 
-    const state: WidgetState = activity.isError ? "error" : activity.isPending ? "loading" : "ready";
+    const state = widgetState(activity);
 
     return (
         <WidgetCard title="GitHub + Bitbucket" icon={<GitCommitHorizontal className="size-3.5" />} state={state} className="sm:col-span-2">

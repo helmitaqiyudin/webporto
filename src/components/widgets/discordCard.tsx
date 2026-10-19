@@ -8,7 +8,8 @@ import { SiDiscord } from "react-icons/si";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hoverCard";
 import { calculateTimes, getStatusText, getStatusType } from "@/lib/utils";
 import type { Activity, DiscordData } from "@/types/discord_activity";
-import WidgetCard, { type WidgetState } from "./widgetCard";
+import { widgetState, type WidgetState } from "@/lib/widgetState";
+import WidgetCard from "./widgetCard";
 
 const DISCORD_USER_ID = process.env.NEXT_PUBLIC_DISCORD_USER_ID;
 const CUSTOM_STATUS = 4;
@@ -44,15 +45,15 @@ export default function DiscordCard() {
     const [now, setNow] = useState(() => Date.now());
     useInterval(() => setNow(Date.now()), 1000);
 
-    const { data, isPending, isError } = useQuery({
+    const presenceQuery = useQuery({
         queryKey: ["discord_activity"],
         queryFn: fetchPresence,
         refetchInterval: 5000,
         enabled: Boolean(DISCORD_USER_ID),
     });
 
-    const state: WidgetState = !DISCORD_USER_ID || isError ? "error" : isPending ? "loading" : "ready";
-    const presence = data?.data;
+    const state: WidgetState = DISCORD_USER_ID ? widgetState(presenceQuery) : "error";
+    const presence = presenceQuery.data?.data;
     const all = presence?.activities ?? [];
     const customStatus = all.find((a) => a.type === CUSTOM_STATUS)?.state;
     // Spotify has its own card, so it isn't repeated here.
@@ -71,6 +72,7 @@ export default function DiscordCard() {
                             alt=""
                             width={40}
                             height={40}
+                            unoptimized
                             className="size-10 rounded-full"
                         />
                     ) : (

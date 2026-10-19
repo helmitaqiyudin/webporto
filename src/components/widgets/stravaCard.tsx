@@ -6,7 +6,8 @@ import { apiGet } from "@/lib/api";
 import { formatDuration, formatKm, formatPace, formatRelativeTime } from "@/lib/format";
 import type { StravaRun, StravaStats } from "@/types/api";
 import RouteSvg from "./routeSvg";
-import WidgetCard, { type WidgetState } from "./widgetCard";
+import { widgetState } from "@/lib/widgetState";
+import WidgetCard from "./widgetCard";
 
 const FIVE_MINUTES = 5 * 60_000;
 
@@ -31,7 +32,7 @@ export default function StravaCard() {
         refetchInterval: FIVE_MINUTES,
     });
 
-    const state: WidgetState = recent.isError ? "error" : recent.isPending ? "loading" : "ready";
+    const state = widgetState(recent);
     const run = recent.data;
 
     return (
